@@ -1,0 +1,437 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-primary: #07090e;
+  --color-bg-secondary: #0a0d14;
+  --color-bg-tertiary: #0f141e;
+  --color-bg-panel: #111827;
+  --color-border-primary: #1a2332;
+  --color-border-glow: #1e3a5f;
+  --color-text-primary: #e8f0f8;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+  --color-accent-emerald: #00ff88;
+  --color-accent-amber: #ffb800;
+  --color-accent-crimson: #ff3355;
+  --color-accent-cyan: #00d4ff;
+  --color-accent-violet: #b84dff;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --shadow-glow-emerald: 0 0 20px rgba(0, 255, 136, 0.3), 0 0 40px rgba(0, 255, 136, 0.1);
+  --shadow-glow-amber: 0 0 20px rgba(255, 184, 0, 0.3), 0 0 40px rgba(255, 184, 0, 0.1);
+  --shadow-glow-crimson: 0 0 20px rgba(255, 51, 85, 0.3), 0 0 40px rgba(255, 51, 85, 0.1);
+  --shadow-glow-cyan: 0 0 20px rgba(0, 212, 255, 0.3), 0 0 40px rgba(0, 212, 255, 0.1);
+  --shadow-glow-violet: 0 0 20px rgba(184, 77, 255, 0.3), 0 0 40px rgba(184, 77, 255, 0.1);
+  --animate-pulse-slow: pulse 3s ease-in-out infinite;
+  --animate-scan: scan 2s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  ::selection {
+    background: var(--color-accent-emerald);
+    color: var(--color-bg-primary);
+  }
+  
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: var(--color-bg-secondary);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border-primary);
+    border-radius: 3px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-muted);
+  }
+}
+
+@layer utilities {
+  .panel-glass {
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.9) 0%, rgba(10, 13, 20, 0.95) 100%);
+    border: 1px solid var(--color-border-primary);
+    backdrop-filter: blur(20px);
+    box-shadow: 
+      0 4px 24px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+  
+  .panel-glow-emerald {
+    box-shadow: 
+      0 4px 24px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03),
+      var(--shadow-glow-emerald);
+  }
+  
+  .panel-glow-crimson {
+    box-shadow: 
+      0 4px 24px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03),
+      var(--shadow-glow-crimson);
+  }
+  
+  .btn-tactical {
+    position: relative;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.9) 0%, rgba(10, 13, 20, 0.95) 100%);
+    border: 1px solid var(--color-border-primary);
+    color: var(--color-text-secondary);
+  }
+  
+  .btn-tactical:hover {
+    border-color: var(--color-accent-emerald);
+    color: var(--color-accent-emerald);
+    box-shadow: var(--shadow-glow-emerald);
+  }
+  
+  .btn-tactical.active {
+    border-color: var(--color-accent-emerald);
+    color: var(--color-accent-emerald);
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 255, 136, 0.05) 100%);
+    box-shadow: var(--shadow-glow-emerald);
+  }
+  
+  .btn-tactical.danger:hover {
+    border-color: var(--color-accent-crimson);
+    color: var(--color-accent-crimson);
+    box-shadow: var(--shadow-glow-crimson);
+  }
+  
+  .btn-tactical.warning:hover {
+    border-color: var(--color-accent-amber);
+    color: var(--color-accent-amber);
+    box-shadow: var(--shadow-glow-amber);
+  }
+  
+  .input-tactical {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-family: var(--font-mono);
+    background-color: var(--color-bg-tertiary);
+    border-color: var(--color-border-primary);
+    color: var(--color-text-primary);
+    transition: all 0.2s;
+    border-radius: 0.25rem;
+  }
+  
+  .input-tactical::placeholder {
+    color: var(--color-text-muted);
+  }
+  
+  .input-tactical:focus {
+    outline: none;
+    border-color: var(--color-accent-cyan);
+    box-shadow: var(--shadow-glow-cyan);
+  }
+  
+  .metric-card {
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.95) 0%, rgba(7, 9, 14, 0.98) 100%);
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+  
+  .metric-value {
+    font-size: 1.875rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+  }
+  
+  .metric-label {
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+  
+  .severity-critical { color: var(--color-accent-crimson); }
+  .severity-high { color: var(--color-accent-amber); }
+  .severity-medium { color: var(--color-accent-cyan); }
+  .severity-info { color: var(--color-accent-emerald); }
+  
+  .scanline-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.08) 2px,
+      rgba(0, 0, 0, 0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 1000;
+  }
+  
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .grid-overlay {
+    background-image:
+      linear-gradient(rgba(0, 212, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 212, 255, 0.06) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 85%);
+  }
+
+  .vignette {
+    background: radial-gradient(ellipse at center, transparent 52%, rgba(0, 0, 0, 0.55) 100%);
+  }
+
+  .glow-cyan { text-shadow: 0 0 8px rgba(0, 212, 255, 0.55); }
+  .glow-emerald { text-shadow: 0 0 8px rgba(0, 255, 136, 0.55); }
+  .glow-crimson { text-shadow: 0 0 8px rgba(255, 51, 85, 0.55); }
+
+  .corner-bracket {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-color: var(--color-accent-cyan);
+    opacity: 0.75;
+    pointer-events: none;
+  }
+
+  .sweep-line {
+    position: relative;
+    overflow: hidden;
+  }
+  .sweep-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.35), transparent);
+    transform: translateX(-100%);
+    animation: sweep 3.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .ticker-track {
+    display: inline-flex;
+    animation: ticker 60s linear infinite;
+    will-change: transform;
+  }
+  .ticker-track:hover {
+    animation-play-state: paused;
+  }
+
+  .accent-line {
+    background: linear-gradient(90deg, transparent, var(--color-accent-emerald), var(--color-accent-cyan), var(--color-accent-violet), transparent);
+    background-size: 200% 100%;
+    animation: accent-shift 8s linear infinite;
+    opacity: 0.7;
+  }
+
+  @keyframes accent-shift {
+    0% { background-position: 0% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .animate-in {
+    animation: animate-in 0.3s ease-out forwards;
+  }
+  
+  @keyframes animate-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes scan {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  @keyframes sweep {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .sev-pulse {
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.5);
+    animation: sev-pulse 1.8s ease-out infinite;
+  }
+
+  @keyframes sev-pulse {
+    0% { transform: scale(0.9); opacity: 1; }
+    70% { transform: scale(1.9); opacity: 0.15; }
+    100% { transform: scale(0.9); opacity: 1; }
+  }
+
+  .webcam-noise {
+    background:
+      repeating-linear-gradient(0deg, rgba(0,212,255,0.06) 0px, rgba(0,212,255,0.06) 1px, transparent 1px, transparent 3px),
+      radial-gradient(circle at 30% 40%, rgba(0,255,136,0.10), transparent 55%),
+      radial-gradient(circle at 70% 65%, rgba(0,212,255,0.10), transparent 55%),
+      linear-gradient(160deg, #0b1220, #060a12);
+    animation: webcam-drift 9s ease-in-out infinite alternate;
+  }
+
+  @keyframes webcam-drift {
+    0% { background-position: 0 0, 0 0, 0 0, 0 0; filter: brightness(0.9); }
+    100% { background-position: 0 12px, 8px 0, -8px 0, 0 0; filter: brightness(1.15); }
+  }
+
+  .cyber-flow {
+    animation: cyber-dash 1.4s linear infinite;
+  }
+
+  @keyframes cyber-dash {
+    to { stroke-dashoffset: -14; }
+  }
+}
+
+/* Leaflet custom styles */
+.leaflet-container {
+  height: 100% !important;
+  width: 100% !important;
+  z-index: 0;
+  background: var(--color-bg-primary) !important;
+  font-family: var(--font-sans) !important;
+}
+
+.leaflet-tile-pane {
+  filter: brightness(0.85) contrast(1.1) saturate(0.7);
+}
+
+.custom-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-popup .leaflet-popup-content-wrapper {
+  background: var(--color-bg-panel) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+.custom-popup .leaflet-popup-content {
+  margin: 12px 16px !important;
+  font-family: var(--font-mono) !important;
+  font-size: 11px !important;
+  line-height: 1.6 !important;
+  color: var(--color-text-primary) !important;
+}
+
+.custom-popup .leaflet-popup-tip {
+  background: var(--color-bg-panel) !important;
+  border: 1px solid var(--color-border-primary) !important;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+}
+
+.leaflet-control-zoom a {
+  background: var(--color-bg-panel) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  border-radius: 6px !important;
+  margin-bottom: 4px !important;
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 34px !important;
+  font-size: 16px !important;
+  transition: all 0.2s !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--color-bg-tertiary) !important;
+  border-color: var(--color-accent-cyan) !important;
+  color: var(--color-accent-cyan) !important;
+}
+
+.leaflet-tooltip.custom-tooltip {
+  background: rgba(7, 9, 14, 0.92);
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  color: #cfd8dd;
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+  padding: 4px 8px;
+}
+.leaflet-tooltip.custom-tooltip::before {
+  border-top-color: rgba(0, 212, 255, 0.4);
+}
+
+.maplibregl-ctrl-bottom-right {
+  bottom: 70px;
+}
+.maplibregl-ctrl-group {
+  background: rgba(7, 9, 14, 0.9) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+}
+.maplibregl-ctrl-group button {
+  background: transparent !important;
+  border-color: var(--color-border-primary) !important;
+}
+.maplibregl-ctrl-group button:not(:last-child) {
+  border-bottom: 1px solid var(--color-border-primary) !important;
+}
+.maplibregl-ctrl button .maplibregl-ctrl-icon {
+  filter: invert(0.75);
+}
+.maplibregl-ctrl-attrib,
+.maplibregl-ctrl-attrib-inner a {
+  color: var(--color-text-muted) !important;
+  font-family: var(--font-mono, monospace);
+  font-size: 9px;
+  background: rgba(7, 9, 14, 0.85) !important;
+}
