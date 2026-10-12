@@ -44,10 +44,7 @@ const AppTopBar = ({ range, onRange }) => {
           aria-hidden="true"
           className="h-10 w-10 shrink-0 filter-cyan-glow"
         />
-        <div className="flex min-w-0 items-baseline gap-3">
-          <span className="truncate font-serif text-[24px] leading-none tracking-tight text-[var(--color-bone)] md:text-[28px]">OSIRIS</span>
-          <span className="hidden text-xs text-[var(--color-faint)] sm:inline">Project Next Level</span>
-        </div>
+        <span className="truncate font-serif text-[24px] leading-none tracking-tight text-[var(--color-bone)] md:text-[28px]">OSIRIS</span>
       </div>
 
       <div className="flex shrink-0 items-center gap-3 md:gap-4">
