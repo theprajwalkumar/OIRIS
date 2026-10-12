@@ -2,6 +2,41 @@
 
 A production-ready, real-time global intelligence and OSINT dashboard inspired by World Monitor (worldmonitor.app). Built with React 18, Vite, Tailwind CSS, and Express.js with native WebSockets.
 
+<img width="2940" height="1664" alt="image" src="https://github.com/user-attachments/assets/975a9587-938c-409d-9e9e-3c9e86addbd6" />
+
+
+<img width="2940" height="1664" alt="image" src="https://github.com/user-attachments/assets/acb3664c-b797-4885-b2dd-caf27bd7951b" />
+
+
+<img width="2940" height="1664" alt="image" src="https://github.com/user-attachments/assets/324d5567-a9b4-41ea-91f8-005eeac3c294" />
+
+
+<img width="2940" height="1664" alt="image" src="https://github.com/user-attachments/assets/71e2fc23-2bde-4a7b-9e0e-e4c66bbf26c5" />
+
+
+<img width="2940" height="1664" alt="image" src="https://github.com/user-attachments/assets/3c334d0d-c433-41c8-9b57-b18b6a20c2bd" />
+
+
+<img width="2940" height="1664" alt="image" src="https://github.com/user-attachments/assets/94a4e17c-e267-4d7c-916a-ef70ac0dd565" />
+
+
+<img width="2940" height="1664" alt="image" src="https://github.com/user-attachments/assets/db3a13c7-c7ec-4398-86f3-89983372f309" />
+
+
+<img width="2940" height="1664" alt="image" src="https://github.com/user-attachments/assets/3805c144-1798-45a8-a865-54e99ae4290f" />
+
+
+<img width="2940" height="1664" alt="image" src="https://github.com/user-attachments/assets/da0abb5e-9259-430b-832c-f37b8d33102b" />
+
+
+
+
+
+
+
+
+
+
 ## Features
 
 ### Interactive Tactical Dark Map
