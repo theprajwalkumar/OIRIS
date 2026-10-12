@@ -31,6 +31,6 @@ export function resolveWsUrl() {
 }
 
 export const HTTP_CONFIG = Object.freeze({
-  defaultTimeoutMs: 15000,
+  defaultTimeoutMs: 30000,
   jsonHeaders: Object.freeze({ 'Content-Type': 'application/json' })
 })

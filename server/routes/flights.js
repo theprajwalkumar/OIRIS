@@ -189,6 +189,31 @@ async function fetchOpenSkyAuthed() {
   }
 }
 
+// OpenSky firewalls cloud/datacenter IPs (verified: raw TCP to their host times
+// out from multiple cloud regions while control hosts connect instantly). So
+// probe reachability with a cheap TCP check and trip a breaker on failure,
+// rather than burning a 15s+ token/state timeout on every global request.
+const OPENSKY_PROBE_MS = 4000
+const OPENSKY_COOLDOWN_MS = 10 * 60 * 1000
+let openskyReachable = null
+let openskyNextProbeAt = 0
+
+async function openSkyUsable() {
+  if (Date.now() < openskyNextProbeAt) return openskyReachable === true
+  openskyNextProbeAt = Date.now() + OPENSKY_COOLDOWN_MS
+  try {
+    const { address } = await dns.lookup('opensky-network.org')
+    const r = await tcpTest(address, 443, OPENSKY_PROBE_MS)
+    openskyReachable = r.ok
+    if (!r.ok) {
+      console.warn(`[flights] OpenSky unreachable (${r.error || 'probe failed'}) — adsb.lol for ${OPENSKY_COOLDOWN_MS / 60000}m`)
+    }
+  } catch {
+    openskyReachable = false
+  }
+  return openskyReachable === true
+}
+
 function altitudeFt(baro, geom) {
   if (typeof baro === 'number') return baro
   if (typeof geom === 'number') return geom
@@ -284,8 +309,9 @@ router.get('/flights', async (req, res) => {
   }
 
   // Primary: OpenSky authenticated full-global snapshot (one request for all
-  // states worldwide). Requires credentials.json (server-side secret).
-  if (openskyCreds?.clientId && openskyCreds?.clientSecret) {
+  // states worldwide), guarded by a reachability breaker (OpenSky blocks cloud
+  // IPs, so this is skipped/failed fast from hosted environments).
+  if (openskyCreds?.clientId && openskyCreds?.clientSecret && (await openSkyUsable())) {
     try {
       const { data, cached } = await cachedFetchJson(
         cache,
@@ -301,6 +327,8 @@ router.get('/flights', async (req, res) => {
       )
       return res.json({ states: data.states, source: 'opensky', cached, timestamp: Date.now(), time: data.time })
     } catch (err) {
+      openskyReachable = false
+      openskyNextProbeAt = Date.now() + OPENSKY_COOLDOWN_MS
       console.error('[flights] OpenSky authenticated failed, falling back to adsb.lol:', err.message)
     }
   }
@@ -519,6 +547,9 @@ router.get('/_diag/opensky', async (req, res) => {
   out.yahoo = await probe('https://query1.finance.yahoo.com/v8/finance/chart/%5ENSEI?interval=5m&range=1d')
   out.tcp_youtube = await tcpTest('www.youtube.com')
   out.youtube_oembed = await probe(`https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=SChm4DyivOU')}&format=json`)
+  out.stooq = await probe('https://stooq.com/q/l/?s=%5Espx&f=sd2t2ohlcv&h&e=csv')
+  out.coingecko = await probe('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+  out.frankfurter = await probe('https://api.frankfurter.app/latest?from=USD&to=INR')
 
   out.token = await timeIt(async () => ({ tokenLen: (await getOpenSkyToken())?.length || 0 }))
   out.states = await timeIt(async () => {
@@ -527,5 +558,8 @@ router.get('/_diag/opensky', async (req, res) => {
   })
   res.json(out)
 })
+
+// Warm the OpenSky reachability cache at startup so the first request is fast.
+openSkyUsable().catch(() => {})
 
 export default router

@@ -1,0 +1,17 @@
+name: keepalive
+
+# Render free web services spin down after ~15 min idle, causing 30-60s cold
+# starts that exceed the browser's request timeout (blank dashboard on first
+# load). Ping the backend on a schedule to keep it warm.
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping backend health
+        run: |
+          curl -sS --max-time 60 https://world-monitor-api-089u.onrender.com/health -o /dev/null -w "http=%{http_code} time=%{time_total}s\n" || true
