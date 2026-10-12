@@ -97,7 +97,7 @@ const AppContent = () => {
 
   return (
     <>
-      <Dashboard onOpenSearch={() => toggleCommandPalette(true)} />
+      <Dashboard />
 
       <CommandPalette
         isOpen={isCommandPaletteOpen}

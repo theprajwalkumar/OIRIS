@@ -30,12 +30,18 @@ const Dashboard = () => {
 
   return (
     <div className="h-screen w-screen bg-[var(--color-ink)]">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:border focus:border-[var(--color-line)] focus:bg-[var(--color-panel)] focus:px-3 focus:py-2 focus:text-sm focus:text-[var(--color-bone)]"
+      >
+        Skip to content
+      </a>
       <LeftRail activeId={activeRail} onJump={jump} />
 
-      <div className="flex h-screen flex-col pl-16">
+      <div className="flex h-screen flex-col pl-0 md:pl-16">
         <AppTopBar range={range} onRange={setRange} />
 
-        <main ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto">
+        <main id="main" ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto">
           <div className="mx-auto max-w-[1400px] px-6 pb-24 md:px-10">
             <Section
               id="situation"

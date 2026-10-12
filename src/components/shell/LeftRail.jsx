@@ -11,7 +11,7 @@ const ICONS = { Radar, Activity, LineChart, ShieldAlert, Plane, Globe }
 const LeftRail = ({ activeId, onJump }) => (
   <nav
     aria-label="Sections"
-    className="fixed left-0 top-0 z-50 flex h-full w-16 flex-col items-center gap-1 border-r border-[var(--color-line)] bg-[var(--color-deep)] py-3"
+    className="fixed left-0 top-0 z-50 hidden h-full w-16 flex-col items-center gap-1 border-r border-[var(--color-line)] bg-[var(--color-deep)] py-3 md:flex"
   >
     <a
       href="#situation"

@@ -36,15 +36,15 @@ const AppTopBar = ({ range, onRange }) => {
   }
 
   return (
-    <header className="sticky top-0 z-40 flex h-[72px] items-center justify-between gap-4 border-b border-[var(--color-line)] bg-[var(--color-ink)]/95 px-5 backdrop-blur">
-      <div className="flex items-baseline gap-3">
-        <span className="font-serif text-[28px] leading-none tracking-tight text-[var(--color-bone)]">World Monitor</span>
-        <span className="text-xs text-[var(--color-faint)]">Project Next Level</span>
+    <header className="sticky top-0 z-40 flex h-[72px] items-center justify-between gap-3 border-b border-[var(--color-line)] bg-[var(--color-ink)]/95 px-4 backdrop-blur md:px-5">
+      <div className="flex min-w-0 items-baseline gap-3">
+        <span className="truncate font-serif text-[24px] leading-none tracking-tight text-[var(--color-bone)] md:text-[28px]">World Monitor</span>
+        <span className="hidden text-xs text-[var(--color-faint)] sm:inline">Project Next Level</span>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex shrink-0 items-center gap-3 md:gap-4">
         <span
-          className="rounded-full border border-[var(--color-brass)]/40 bg-[var(--color-brass)]/10 px-3 py-1 text-xs text-[var(--color-brass)]"
+          className="hidden rounded-full border border-[var(--color-brass)]/40 bg-[var(--color-brass)]/10 px-3 py-1 text-xs text-[var(--color-brass)] lg:inline-block"
           role="status"
         >
           {watch}
@@ -53,7 +53,7 @@ const AppTopBar = ({ range, onRange }) => {
         <div
           role="group"
           aria-label="Time range"
-          className="flex items-center rounded-full border border-[var(--color-line)] bg-[var(--color-panel)] p-0.5"
+          className="flex shrink-0 items-center rounded-full border border-[var(--color-line)] bg-[var(--color-panel)] p-0.5"
         >
           {RANGE_PRESETS.map((p) => {
             const active = range === p.id
@@ -63,7 +63,7 @@ const AppTopBar = ({ range, onRange }) => {
                 type="button"
                 aria-pressed={active}
                 onClick={() => chooseRange(p)}
-                className={`rounded-full px-3 py-1 text-xs transition-colors ${
+                className={`rounded-full px-2.5 py-1 text-xs transition-colors md:px-3 ${
                   active ? 'bg-[var(--color-brass)] text-[var(--color-ink)]' : 'text-[var(--color-mute)] hover:text-[var(--color-bone)]'
                 }`}
               >
@@ -73,7 +73,9 @@ const AppTopBar = ({ range, onRange }) => {
           })}
         </div>
 
-        <UtcClock />
+        <div className="hidden sm:block">
+          <UtcClock />
+        </div>
       </div>
     </header>
   )
