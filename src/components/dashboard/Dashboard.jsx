@@ -6,8 +6,8 @@ import { useScrollSpy } from '../../hooks/useScrollSpy.js'
 import { SECTION_IDS, railIdFor } from '../../config/sections.js'
 
 // Temporary: existing panels remain mounted inside the new section chrome
-// until phases 2-4 replace each section's contents.
-import GlobalMapPanel from './GlobalMapPanel.jsx'
+// until phases 3-4 replace each section's contents.
+import Stage from './Stage.jsx'
 import NewsPlayer from './NewsPlayer.jsx'
 import { WebcamsPanel, FeedCoveragePanel, BreakingTicker } from './BroadcastPanels.jsx'
 import { CIIPanel, ConflictZonesPanel, CriticalAlertsPanel, IntelStatsStrip } from './IntelPanels.jsx'
@@ -44,7 +44,7 @@ const Dashboard = () => {
               title="Situation"
               description="Live global picture: active conflicts, cyber activity, maritime movement and natural events on a single rotating globe."
             >
-              <GlobalMapPanel />
+              <Stage />
             </Section>
 
             <Section
