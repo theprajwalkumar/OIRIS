@@ -24,15 +24,16 @@ export const Section = ({ id, title, description, status, children }) => (
 )
 
 /** Flat data surface: panel colour, hairline border, 14px radius. */
-export const Surface = ({ title, right, children, className = '', padded = true }) => (
-  <div className={`rounded-[14px] border border-[var(--color-line)] bg-[var(--color-panel)] ${className}`}>
+export const Surface = ({ title, right, children, className = '', bodyClassName = '', footer, padded = true }) => (
+  <div className={`flex flex-col rounded-[14px] border border-[var(--color-line)] bg-[var(--color-panel)] ${className}`}>
     {(title || right) && (
-      <div className="flex items-center justify-between gap-3 border-b border-[var(--color-line)] px-4 py-2.5">
+      <div className="flex shrink-0 items-center justify-between gap-3 border-b border-[var(--color-line)] px-4 py-2.5">
         {title && <h3 className="text-sm font-medium text-[var(--color-bone)]">{title}</h3>}
         {right && <div className="flex items-center gap-2">{right}</div>}
       </div>
     )}
-    <div className={padded ? 'p-4' : ''}>{children}</div>
+    <div className={`min-h-0 flex-1 ${padded ? 'p-4' : ''} ${bodyClassName}`}>{children}</div>
+    {footer && <div className="shrink-0 border-t border-[var(--color-line)] px-4 py-2.5">{footer}</div>}
   </div>
 )
 

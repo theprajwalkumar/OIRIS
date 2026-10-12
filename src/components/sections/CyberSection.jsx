@@ -48,8 +48,11 @@ const CyberSection = () => {
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       <Surface
+        className="h-[calc(100vh-260px)] min-h-[420px]"
         title="Attack flows"
         right={<span className="text-[11px] text-[var(--color-faint)]">{volume.toLocaleString()} volume</span>}
+        bodyClassName="scroll-area overflow-y-auto"
+        footer={<p className="text-[11px] text-[var(--color-faint)]">Modelled reference flows derived from static origin/target sets.</p>}
       >
         <table className="w-full border-collapse">
           <thead>
@@ -69,10 +72,15 @@ const CyberSection = () => {
             ))}
           </tbody>
         </table>
-        <p className="mt-3 text-[11px] text-[var(--color-faint)]">Modelled reference flows derived from static origin/target sets.</p>
       </Surface>
 
-      <Surface title="Threat families" right={<span className="text-[11px] text-[var(--color-faint)]">{c2.length} C2 IOCs live</span>}>
+      <Surface
+        className="h-[calc(100vh-260px)] min-h-[420px]"
+        title="Threat families"
+        right={<span className="text-[11px] text-[var(--color-faint)]">{c2.length} C2 IOCs live</span>}
+        bodyClassName="scroll-area overflow-y-auto"
+        footer={<p className="text-[11px] text-[var(--color-faint)]">Botnet figures are modelled ({infected.toLocaleString()} bots); hosts and C2 are live.</p>}
+      >
         <table className="w-full border-collapse">
           <thead>
             <tr className="text-left text-[11px] text-[var(--color-faint)]">
@@ -112,13 +120,11 @@ const CyberSection = () => {
             ))}
             {hosts.length === 0 && <li className="text-[11px] text-[var(--color-faint)]">Awaiting URLhaus feed.</li>}
           </ul>
-          <p className="mt-2 text-[11px] text-[var(--color-faint)]">
-            Botnet figures are modelled ({infected.toLocaleString()} bots); hosts and C2 are live.
-          </p>
         </div>
       </Surface>
 
       <Surface
+        className="h-[calc(100vh-260px)] min-h-[420px]"
         title="Known exploited vulnerabilities"
         right={
           <input
@@ -129,6 +135,8 @@ const CyberSection = () => {
             className="w-28 rounded-full border border-[var(--color-line)] bg-transparent px-2.5 py-1 text-xs text-[var(--color-bone)] placeholder:text-[var(--color-faint)] focus:border-[var(--color-ice)]"
           />
         }
+        bodyClassName="scroll-area overflow-y-auto"
+        footer={<p className="text-[11px] text-[var(--color-faint)]">{kev.length} known exploited vulnerabilities tracked.</p>}
       >
         <ul className="divide-y divide-[var(--color-line)]">
           {kevRows.map((e) => (
@@ -149,7 +157,6 @@ const CyberSection = () => {
             {kev.length ? 'No matching CVEs.' : 'Awaiting CISA KEV feed.'}
           </p>
         )}
-        <p className="mt-3 text-[11px] text-[var(--color-faint)]">{kev.length} known exploited vulnerabilities tracked.</p>
       </Surface>
     </div>
   )

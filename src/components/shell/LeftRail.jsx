@@ -16,7 +16,7 @@ const LeftRail = ({ activeId, onJump }) => (
     <a
       href="#situation"
       onClick={(e) => { e.preventDefault(); onJump?.('situation') }}
-      aria-label="World Monitor — back to top"
+      aria-label="OSIRIS — back to top"
       className="mb-2 flex h-10 w-10 items-center justify-center"
     >
       <img src="/assets/osiris-emblem.svg" alt="" aria-hidden="true" className="h-8 w-8" />

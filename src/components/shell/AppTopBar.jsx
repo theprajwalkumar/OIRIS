@@ -37,9 +37,17 @@ const AppTopBar = ({ range, onRange }) => {
 
   return (
     <header className="sticky top-0 z-40 flex h-[72px] items-center justify-between gap-3 border-b border-[var(--color-line)] bg-[var(--color-ink)]/95 px-4 backdrop-blur md:px-5">
-      <div className="flex min-w-0 items-baseline gap-3">
-        <span className="truncate font-serif text-[24px] leading-none tracking-tight text-[var(--color-bone)] md:text-[28px]">World Monitor</span>
-        <span className="hidden text-xs text-[var(--color-faint)] sm:inline">Project Next Level</span>
+      <div className="flex min-w-0 items-center gap-3">
+        <img
+          src="/assets/osiris-emblem.svg"
+          alt=""
+          aria-hidden="true"
+          className="h-10 w-10 shrink-0 filter-cyan-glow"
+        />
+        <div className="flex min-w-0 items-baseline gap-3">
+          <span className="truncate font-serif text-[24px] leading-none tracking-tight text-[var(--color-bone)] md:text-[28px]">OSIRIS</span>
+          <span className="hidden text-xs text-[var(--color-faint)] sm:inline">Project Next Level</span>
+        </div>
       </div>
 
       <div className="flex shrink-0 items-center gap-3 md:gap-4">

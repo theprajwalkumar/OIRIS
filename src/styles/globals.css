@@ -256,6 +256,29 @@
     filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.55)) drop-shadow(0 0 13px rgba(0, 212, 255, 0.28));
   }
 
+  .scroll-area {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-strong) transparent;
+  }
+
+  .scroll-area::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scroll-area::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scroll-area::-webkit-scrollbar-thumb {
+    background: var(--color-line-strong);
+    border-radius: 3px;
+  }
+
+  .scroll-area::-webkit-scrollbar-thumb:hover {
+    background: var(--color-faint);
+  }
+
   .corner-bracket {
     position: absolute;
     width: 16px;
