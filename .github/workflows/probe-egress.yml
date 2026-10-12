@@ -1,0 +1,24 @@
+name: probe-egress
+
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe upstream services from a cloud IP
+        run: |
+          p() {
+            printf '%-22s ' "$1"
+            curl -sS -o /dev/null --max-time 15 -A 'Mozilla/5.0' -w 'http=%{http_code} time=%{time_total}s\n' "$2" || echo "curl-failed"
+          }
+          p yahoo-chart   'https://query1.finance.yahoo.com/v8/finance/chart/%5ENSEI?interval=5m&range=1d'
+          p yahoo-quote   'https://query1.finance.yahoo.com/v7/finance/quote?symbols=%5ENSEI'
+          p coingecko     'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd'
+          p stooq         'https://stooq.com/q/l/?s=%5Espx&f=sd2t2ohlcv&h&e=csv'
+          p frankfurter   'https://api.frankfurter.app/latest?from=USD&to=INR'
+          p youtube-oembed 'https://www.youtube.com/oembed?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DSChm4DyivOU&format=json'
+          p opensky-tcp-check 'https://opensky-network.org/api/states/all'
+          echo '--- TCP to opensky host ---'
+          timeout 6 bash -c 'cat < /dev/null > /dev/tcp/194.209.200.34/443' && echo 'opensky tcp: OK' || echo 'opensky tcp: BLOCKED/TIMEOUT'
