@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 import { addEvents } from '../utils/eventStore.js'
+import { resolveWsUrl } from '../config/http.js'
 
 const WSContext = createContext(null)
 
@@ -21,12 +22,11 @@ export const WSProvider = ({ children }) => {
   const connect = useCallback(() => {
     if (!isMounted.current) return
 
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-    // In development, connect directly to the WebSocket server on port 3001
-    // In production, use the same host
-    const wsUrl = import.meta.env.DEV 
-      ? `${protocol}//localhost:3001/ws`
-      : `${protocol}//${window.location.host}/ws`
+    // Same-origin in dev/prod by default; a remote backend can be pointed at
+    // via VITE_API_BASE / VITE_WS_URL (see config/http.js) when the frontend
+    // is hosted separately from the server.
+    const wsUrl = resolveWsUrl()
+    if (!wsUrl) return
     
     try {
       const socket = new WebSocket(wsUrl)

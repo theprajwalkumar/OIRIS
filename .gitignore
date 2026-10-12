@@ -16,6 +16,7 @@ dist-ssr
 credentials.json
 .env
 .env.*
+!.env.example
 *.pem
 
 # Editor directories and files

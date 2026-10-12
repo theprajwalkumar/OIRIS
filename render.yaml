@@ -1,0 +1,22 @@
+# Render Blueprint — backend (Express REST + WebSocket + ingestion scheduler).
+#
+# The frontend is a separate static deploy (Vercel). This service hosts the
+# long-running Node process the frontend talks to via VITE_API_BASE.
+#
+# Deploy: Render Dashboard → New → Blueprint → pick this repo.
+# Then set the two OpenSky secret env vars (marked sync: false) in the dashboard.
+services:
+  - type: web
+    name: world-monitor-api
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run server
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: OPENSKY_CLIENT_ID
+        sync: false
+      - key: OPENSKY_CLIENT_SECRET
+        sync: false

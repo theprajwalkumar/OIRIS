@@ -10,7 +10,7 @@
  * error payload such as `{ states: [], error }`); pass `throwOnHttpError` to
  * opt into strict handling.
  */
-import { HTTP_CONFIG } from '../config/http.js'
+import { HTTP_CONFIG, API_BASE } from '../config/http.js'
 
 export class ApiError extends Error {
   /**
@@ -33,7 +33,8 @@ export class ApiError extends Error {
  */
 function buildUrl(path, params) {
   const base =
-    typeof window !== 'undefined' ? window.location.origin : 'http://localhost'
+    API_BASE ||
+    (typeof window !== 'undefined' ? window.location.origin : 'http://localhost')
   const url = new URL(path, base)
   if (params) {
     for (const [key, value] of Object.entries(params)) {

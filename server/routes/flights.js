@@ -20,16 +20,28 @@ const ADSBDB_AIRCRAFT = 'https://api.adsbdb.com/v0/aircraft'
 const FETCH_TIMEOUT = 15000
 const OPENSKY_TIMEOUT = 45000
 
-// OpenSky OAuth2 client credentials (server-side secret; credentials.json is
-// gitignored). Authenticated /states/all returns the full global snapshot in a
-// single request, which is both more complete and far lighter than hub sampling.
+// OpenSky OAuth2 client credentials (server-side secret). On local machines
+// they are read from the gitignored credentials.json; on cloud hosts (where
+// that file is absent) set OPENSKY_CLIENT_ID / OPENSKY_CLIENT_SECRET env vars.
+// Authenticated /states/all returns the full global snapshot in a single
+// request, both more complete and far lighter than hub sampling.
 let openskyCreds = null
 try {
   openskyCreds = JSON.parse(
     readFileSync(new URL('../../credentials.json', import.meta.url), 'utf8')
   )
 } catch {
-  console.warn('[flights] credentials.json not found — OpenSky auth disabled (falling back to adsb.lol)')
+  // no local file — fall through to env vars
+}
+if ((!openskyCreds?.clientId || !openskyCreds?.clientSecret) && process.env.OPENSKY_CLIENT_ID) {
+  openskyCreds = {
+    clientId: process.env.OPENSKY_CLIENT_ID,
+    clientSecret: process.env.OPENSKY_CLIENT_SECRET
+  }
+}
+if (!openskyCreds?.clientId || !openskyCreds?.clientSecret) {
+  openskyCreds = null
+  console.warn('[flights] OpenSky credentials not found — auth disabled (falling back to adsb.lol)')
 }
 
 // Keyless global aggregation: adsb.lol caps a single /point query at ~1000nm,
