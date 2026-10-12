@@ -8,12 +8,14 @@ import { WSProvider } from './context/WSContext.jsx'
 import { MapLayerProvider } from './context/MapLayerContext.jsx'
 import { UIProvider } from './context/UIContext.jsx'
 import { FlightProvider } from './context/FlightContext.jsx'
+import { OntologyProvider } from './context/OntologyContext.jsx'
 import { useCommandPalette } from './hooks/useCommandPalette.js'
 import { useURLState } from './hooks/useURLState.js'
 import { useHotkeys } from './hooks/useHotkeys.js'
 import Dashboard from './components/dashboard/Dashboard.jsx'
 import CommandPalette from './components/CommandPalette.jsx'
 import ExportModal from './components/ExportModal.jsx'
+import CommandSuite from './components/command/CommandSuite.jsx'
 
 // Fix Leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl
@@ -106,6 +108,8 @@ const AppContent = () => {
         onClose={toggleCommandPalette}
       />
 
+      <CommandSuite />
+
       <ExportModal
         isOpen={showExportModal}
         onClose={() => setShowExportModal(false)}
@@ -122,7 +126,9 @@ const App = () => {
         <MapLayerProvider>
           <UIProvider>
             <FlightProvider>
+            <OntologyProvider>
             <AppContent />
+            </OntologyProvider>
             </FlightProvider>
           </UIProvider>
         </MapLayerProvider>

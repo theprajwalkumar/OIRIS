@@ -1,19 +1,55 @@
 import React, { useMemo, useState } from 'react'
 import { Camera, Activity, Rss, Newspaper } from 'lucide-react'
 import { useFeedHealth } from '../../hooks/useFeedHealth.js'
+import { useLiveVideo } from '../../hooks/useLiveVideo.js'
 import { useEvents } from '../../context/EventContext.jsx'
 import { WEBCAM_FEEDS, WEBCAM_REGIONS } from '../../utils/constants.js'
 import { buildFeedCoverage, buildNewsHeadlines } from '../../utils/dashboardData.js'
 import { Panel, StatTile, Dot, Bar, sevColor, timeAgo } from './ui.jsx'
 
+const WebcamTile = ({ cam }) => {
+  const yt = useLiveVideo({ channel: cam.channel || null, video: cam.video || null })
+  const src = yt.videoId
+    ? `https://www.youtube.com/embed/${yt.videoId}?autoplay=1&mute=1&playsinline=1&modestbranding=1&rel=0&iv_load_policy=3`
+    : null
+
+  return (
+    <div className="relative rounded border border-[var(--color-border-primary)] overflow-hidden group">
+      <div className="relative aspect-video bg-black overflow-hidden">
+        {src ? (
+          <iframe
+            title={cam.name}
+            className="absolute inset-0 w-full h-full"
+            src={src}
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            allowFullScreen
+            loading="lazy"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="font-mono text-[9px] tracking-wider text-[var(--color-text-muted)]">
+              {yt.error ? 'OFFLINE' : 'CONNECTING'}
+            </span>
+          </div>
+        )}
+        {src && (
+          <div className="absolute top-1 left-1 flex items-center gap-1 px-1 rounded-sm bg-black/60 pointer-events-none">
+            <Dot color="#ff3355" pulse size={5} />
+            <span className="font-mono text-[8px] text-white/90 tracking-wider">LIVE</span>
+          </div>
+        )}
+        <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between gap-1 px-1.5 py-0.5 bg-gradient-to-t from-black/90 to-transparent pointer-events-none">
+          <span className="font-mono text-[9px] text-white/95 truncate">{cam.name}</span>
+          <span className="font-mono text-[8px] text-[var(--color-accent-cyan)] shrink-0">{cam.country}</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export const WebcamsPanel = () => {
   const [region, setRegion] = useState('all')
   const cams = WEBCAM_FEEDS.filter((c) => region === 'all' || c.region === region)
-
-  const src = (cam) =>
-    cam.channel
-      ? `https://www.youtube.com/embed/live_stream?channel=${cam.channel}&autoplay=1&mute=1&playsinline=1&modestbranding=1&rel=0&iv_load_policy=3`
-      : `https://www.youtube.com/embed/${cam.video}?autoplay=1&mute=1&playsinline=1&modestbranding=1&rel=0&iv_load_policy=3`
 
   return (
     <Panel
@@ -35,26 +71,7 @@ export const WebcamsPanel = () => {
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
         {cams.map((cam) => (
-          <div key={cam.id} className="relative rounded border border-[var(--color-border-primary)] overflow-hidden group">
-            <div className="relative aspect-video bg-black overflow-hidden">
-              <iframe
-                title={cam.name}
-                className="absolute inset-0 w-full h-full"
-                src={src(cam)}
-                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-                allowFullScreen
-                loading="lazy"
-              />
-              <div className="absolute top-1 left-1 flex items-center gap-1 px-1 rounded-sm bg-black/60 pointer-events-none">
-                <Dot color="#ff3355" pulse size={5} />
-                <span className="font-mono text-[8px] text-white/90 tracking-wider">LIVE</span>
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between gap-1 px-1.5 py-0.5 bg-gradient-to-t from-black/90 to-transparent pointer-events-none">
-                <span className="font-mono text-[9px] text-white/95 truncate">{cam.name}</span>
-                <span className="font-mono text-[8px] text-[var(--color-accent-cyan)] shrink-0">{cam.country}</span>
-              </div>
-            </div>
-          </div>
+          <WebcamTile key={cam.id} cam={cam} />
         ))}
       </div>
     </Panel>

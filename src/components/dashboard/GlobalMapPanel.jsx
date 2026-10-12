@@ -1,16 +1,18 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { MapContainer, TileLayer, LayerGroup, useMap, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
-import { Layers, ChevronDown, MapPin } from 'lucide-react'
+import { Layers, ChevronDown, MapPin, Crosshair, Radar } from 'lucide-react'
 import { useEvents } from '../../context/EventContext.jsx'
 import { useMapLayers } from '../../context/MapLayerContext.jsx'
 import { useUI } from '../../context/UIContext.jsx'
-import { MAP_LEGEND } from '../../utils/constants.js'
+import { useOntology } from '../../context/OntologyContext.jsx'
+import { MAP_LEGEND, CLASSIFICATION_META } from '../../utils/constants.js'
 import { sevColor, Dot } from './ui.jsx'
 import MapCanvas from '../MapCanvas.jsx'
 import StaticGeoLayer from '../StaticGeoLayer.jsx'
 import LiveFlightsLayer from '../LiveFlightsLayer.jsx'
 import Map3D from '../Map3D.jsx'
+import TargetingOverlay from '../command/TargetingOverlay.jsx'
 
 const DASHBOARD_LAYERS = [
   { id: 'intel-hotspots', label: 'Intel Hotspots' },
@@ -90,9 +92,52 @@ const SeverityMarkers = () => {
   return null
 }
 
+const TargetingHud = () => {
+  const { suite, toggleSuite, stats, taskSensor } = useOntology()
+  const { center } = useUI()
+  const on = suite.targeting
+  const classes = stats.byClassification || {}
+
+  return (
+    <div className="absolute top-2 right-2 z-[500] panel-glass border border-[var(--color-border-primary)] rounded-md p-2 w-52 pointer-events-auto">
+      <button
+        onClick={() => toggleSuite('targeting')}
+        className={`w-full flex items-center justify-between px-2 py-1 rounded-sm border font-mono text-[9px] uppercase tracking-widest transition-colors ${on ? 'border-[var(--color-accent-crimson)] text-[var(--color-accent-crimson)]' : 'border-[var(--color-border-primary)] text-[var(--color-text-muted)]'}`}
+      >
+        <span className="flex items-center gap-1.5"><Crosshair className="w-3.5 h-3.5" /> Targeting HUD</span>
+        <span className={`w-6 h-3 rounded-full transition-colors relative ${on ? 'bg-[var(--color-accent-crimson)]/40' : 'bg-[var(--color-bg-tertiary)]'}`}>
+          <span className={`absolute top-0.5 w-2 h-2 rounded-full transition-all ${on ? 'left-3.5 bg-[var(--color-accent-crimson)]' : 'left-0.5 bg-[var(--color-text-muted)]'}`} />
+        </span>
+      </button>
+
+      {on && (
+        <>
+          <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 mt-2">
+            {Object.entries(CLASSIFICATION_META).map(([k, m]) => (
+              <div key={k} className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-sm shrink-0" style={{ border: `1px solid ${m.color}`, boxShadow: `0 0 5px ${m.color}` }} />
+                <span className="font-mono text-[9px] text-[var(--color-text-secondary)]">{m.label}</span>
+                <span className="ml-auto font-mono text-[9px]" style={{ color: m.color }}>{classes[k] || 0}</span>
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={() => taskSensor({ lat: center[0], lng: center[1], targetLabel: 'map cue' })}
+            className="btn-tactical warning w-full mt-2 py-1 text-[9px] inline-flex items-center justify-center gap-1.5"
+          >
+            <Radar className="w-3.5 h-3.5" /> SENSOR TASKING · CUE
+          </button>
+          <div className="font-mono text-[8px] text-[var(--color-text-muted)] mt-1 text-center">SIMULATED · {center[0].toFixed(1)}, {center[1].toFixed(1)}</div>
+        </>
+      )}
+    </div>
+  )
+}
+
 const GlobalMapPanel = () => {
   const { toggleLayer, isLayerActive } = useMapLayers()
   const { mapMode } = useUI()
+  const { suite } = useOntology()
   const [open, setOpen] = useState(true)
   const center = useMemo(() => [20, 0], [])
 
@@ -124,6 +169,7 @@ const GlobalMapPanel = () => {
           <LiveFlightsLayer />
           <StaticGeoLayer />
           <SeverityMarkers />
+          {suite.targeting && <TargetingOverlay />}
           <MapBinding />
         </LayerGroup>
       </MapContainer>
@@ -133,6 +179,8 @@ const GlobalMapPanel = () => {
           <Map3D />
         </div>
       )}
+
+      <TargetingHud />
 
       <div className="absolute top-0 left-0 right-0 z-[500] flex items-center justify-between px-3 py-2 bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
         <div className="flex items-center gap-2">

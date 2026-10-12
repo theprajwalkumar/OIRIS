@@ -10,6 +10,16 @@ export const SEVERITY_LEVELS = [
   { id: 'info', label: 'INFO', color: '#00ff88', priority: 3 }
 ]
 
+// Targeting-HUD / ontology classification palette.
+export const CLASSIFICATION_META = {
+  hostile: { label: 'HOSTILE', color: '#ff3355' },
+  unknown: { label: 'UNKNOWN', color: '#ffb800' },
+  neutral: { label: 'NEUTRAL', color: '#00d4ff' },
+  friendly: { label: 'FRIENDLY', color: '#00ff88' }
+}
+
+export const classificationColor = (c) => (CLASSIFICATION_META[c] || CLASSIFICATION_META.unknown).color
+
 export const EVENT_CATEGORIES = [
   { id: 'conflict', label: 'Armed Conflict', group: 'geopolitics', icon: 'Crosshair' },
   { id: 'cisa-kev', label: 'CISA KEV Exploit', group: 'geopolitics', icon: 'AlertTriangle' },
@@ -134,6 +144,39 @@ export const TIME_RANGES = [
 ]
 
 export const NEWS_CHANNELS = [
+  // India-first defaults. Channels are resolved server-side to their current
+  // live video id (via /api/news/live) because YouTube retired the
+  // `embed/live_stream?channel=` endpoint. `hls` streams play directly.
+  {
+    id: 'ndtv', label: 'NDTV 24x7', short: 'NDTV',
+    youtubeChannel: 'UCZFMm1mMw0F81Z37aaEzTUA',
+    hls: null
+  },
+  {
+    id: 'indiatoday', label: 'India Today', short: 'IT',
+    youtubeChannel: 'UCYPvAwZP8pZhSMW8qs7cVCw',
+    hls: null
+  },
+  {
+    id: 'wion', label: 'WION', short: 'WION',
+    youtubeChannel: 'UC_gUM8rL-Lrg6O3adPW9K1g',
+    hls: null
+  },
+  {
+    id: 'aajtak', label: 'Aaj Tak', short: 'AT',
+    youtubeChannel: 'UCt4t-jeY85JegMlZ-E5UWtA',
+    hls: null
+  },
+  {
+    id: 'republic', label: 'Republic World', short: 'REP',
+    youtubeChannel: 'UCwqusr8YDwM-3mEYTDeJHzw',
+    hls: null
+  },
+  {
+    id: 'ddnews', label: 'DD News', short: 'DD',
+    youtubeChannel: 'UCKwucPzHZ7zCUIf7If-Wo1g',
+    hls: null
+  },
   {
     id: 'bloomberg', label: 'Bloomberg', short: 'BBG',
     youtubeChannel: 'UCIALMKvObZNtJ6AmdCLP7Lg',
@@ -178,6 +221,7 @@ export const NEWS_CHANNELS = [
 
 export const WEBCAM_REGIONS = [
   { id: 'all', label: 'ALL' },
+  { id: 'india', label: 'INDIA' },
   { id: 'mideast', label: 'MIDEAST' },
   { id: 'europe', label: 'EUROPE' },
   { id: 'americas', label: 'AMERICAS' },
@@ -186,9 +230,13 @@ export const WEBCAM_REGIONS = [
 ]
 
 export const WEBCAM_FEEDS = [
-  // Verified live + embeddable YouTube sources. `channel` uses YouTube's
-  // live_stream endpoint (never expires); `video` pins a specific live video
-  // (EarthCam rotates cities, so its cams are pinned by video id).
+  // Verified live YouTube sources. `channel` is resolved to the current live
+  // video id server-side (via /api/news/live); `video` pins a specific live
+  // video (EarthCam rotates cities, so its cams are pinned by video id) and is
+  // verified in the background.
+  { id: 'goldentemple', name: 'Amritsar · Golden Temple (Live Darshan)', country: 'India', region: 'india', lat: 31.62, lng: 74.876, channel: 'UCYn6UEtQ771a_OWSiNBoG8w' },
+  { id: 'newdelhi', name: 'New Delhi · Live Feed', country: 'India', region: 'india', lat: 28.6139, lng: 77.209, channel: 'UCZFMm1mMw0F81Z37aaEzTUA' },
+  { id: 'mumbai', name: 'Mumbai · Live Feed', country: 'India', region: 'india', lat: 19.076, lng: 72.8777, channel: 'UCYPvAwZP8pZhSMW8qs7cVCw' },
   { id: 'nyc', name: 'New York · Times Square', country: 'USA', region: 'americas', lat: 40.758, lng: -73.985, video: 'JQ_jwk_7OVE' },
   { id: 'london', name: 'London · Abbey Road', country: 'UK', region: 'europe', lat: 51.532, lng: -0.178, video: 'zMCea32gpmg' },
   { id: 'jerusalem', name: 'Jerusalem · Western Wall', country: 'Israel', region: 'mideast', lat: 31.777, lng: 35.235, video: '77akujLn4k8' },

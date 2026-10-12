@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { MapContainer, TileLayer, useMap } from 'react-leaflet'
 import L from 'leaflet'
-import { Plane, Radar, Gauge } from 'lucide-react'
+import { Plane, Radar, Gauge, X, Target, ArrowRight, Loader2 } from 'lucide-react'
 import { useFlights } from '../../context/FlightContext.jsx'
 import { getFlightRoute } from '../../services/flights.js'
 import { Panel, DataTable, StatTile, Dot } from './ui.jsx'
@@ -131,6 +131,13 @@ const baseTile = (
 
 const DELHI = [28.6139, 77.209]
 
+const DetailField = ({ label, value, accent }) => (
+  <div className="flex flex-col">
+    <span className="font-mono text-[8px] uppercase tracking-wider text-[var(--color-text-muted)]">{label}</span>
+    <span className="font-mono text-[11px] truncate" style={{ color: accent || 'var(--color-text-primary)' }}>{value}</span>
+  </div>
+)
+
 export const AircraftMetricsPanel = () => {
   const { flights, source, lastUpdate, loading } = useFlights()
   const [now, setNow] = useState(() => Date.now())
@@ -153,6 +160,89 @@ export const AircraftMetricsPanel = () => {
       <div className="mt-1.5 flex items-center justify-between font-mono text-[8px] text-[var(--color-text-muted)]">
         <span>GPS INTERFERENCE · <span className="text-[var(--color-accent-amber)]">MONITORING</span></span>
         <span>{lastUpdate ? `${Math.floor((now - lastUpdate) / 1000)}s ago` : '—'}</span>
+      </div>
+    </Panel>
+  )
+}
+
+export const FlightDetailPanel = () => {
+  const { selectedFlight: f, route, aircraftInfo, clearSelection, flyTo } = useFlights()
+
+  if (!f) {
+    return (
+      <Panel title="Aircraft Detail" icon={Plane} accent="var(--color-accent-cyan)"
+        right={<span className="font-mono text-[9px] text-[var(--color-text-muted)]">NO SELECTION</span>}>
+        <div className="py-6 text-center font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-muted)]">
+          Click an aircraft on a radar to inspect route &amp; telemetry
+        </div>
+      </Panel>
+    )
+  }
+
+  const color = f.military ? '#b84dff' : '#00d4ff'
+
+  return (
+    <Panel title="Aircraft Detail" icon={Plane} accent="var(--color-accent-cyan)"
+      right={
+        <div className="flex items-center gap-1">
+          <button className="btn-tactical p-1" title="Fly to aircraft" aria-label="Fly to aircraft"
+            onClick={() => flyTo(f.lat, f.lng, 9)}>
+            <Target className="w-3 h-3" />
+          </button>
+          <button className="btn-tactical p-1" title="Close" aria-label="Close selection" onClick={clearSelection}>
+            <X className="w-3 h-3" />
+          </button>
+        </div>
+      }>
+      <div className="flex items-center gap-2 mb-2">
+        <span className="font-mono text-sm font-bold tracking-wider" style={{ color }}>{(f.callsign || f.icao24 || '').trim()}</span>
+        {f.military && (
+          <span className="font-mono text-[9px] px-1.5 py-0.5 rounded"
+            style={{ background: '#b84dff22', color: '#b84dff', border: '1px solid #b84dff44' }}>MILITARY</span>
+        )}
+        <span className="font-mono text-[9px] text-[var(--color-text-muted)] ml-auto">
+          {f.verticalRate > 0 ? '▲ CLIMB' : f.verticalRate < 0 ? '▼ DESCENT' : '— LEVEL'} {Math.abs(f.verticalRate || 0)} ft/min
+        </span>
+      </div>
+
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-x-3 gap-y-2">
+        <DetailField label="ICAO24" value={(f.icao24 || '').toUpperCase()} />
+        <DetailField label="Registration" value={f.registration || aircraftInfo?.registration || '—'} />
+        <DetailField label="Type" value={f.aircraftType || aircraftInfo?.type || '—'} />
+        <DetailField label="Operator" value={route?.airline || aircraftInfo?.owner || '—'} />
+        <DetailField label="Altitude" value={f.altitude != null ? `${Math.round(f.altitude).toLocaleString()} ft` : '—'} />
+        <DetailField label="Speed" value={f.velocity != null ? `${Math.round(f.velocity)} kts` : '—'} />
+        <DetailField label="Heading" value={`${Math.round(f.heading || 0)}°`} />
+        <DetailField label="Squawk" value={f.squawk || '—'} />
+        <DetailField label="Position" value={f.lat != null ? `${f.lat.toFixed(3)}, ${f.lng.toFixed(3)}` : '—'} />
+        <DetailField label="Source" value={f.originCountry || 'ADS-B'} />
+      </div>
+
+      <div className="mt-2 pt-2 border-t border-[var(--color-border-primary)]">
+        {route === null ? (
+          <div className="flex items-center gap-2 py-1 text-[var(--color-text-muted)]">
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            <span className="font-mono text-[10px] uppercase tracking-wider">Resolving route...</span>
+          </div>
+        ) : route?.found ? (
+          <div className="flex items-center gap-3">
+            <div className="flex-1 min-w-0">
+              <span className="font-mono text-[8px] uppercase tracking-wider text-[var(--color-text-muted)]">Origin</span>
+              <div className="font-mono text-sm text-[var(--color-accent-emerald)]">{route.origin?.iata || '???'}
+                <span className="ml-2 text-[10px] text-[var(--color-text-muted)]">{route.origin?.name || ''}</span>
+              </div>
+            </div>
+            <ArrowRight className="w-4 h-4 text-[var(--color-text-muted)] flex-shrink-0" />
+            <div className="flex-1 min-w-0 text-right">
+              <span className="font-mono text-[8px] uppercase tracking-wider text-[var(--color-text-muted)]">Destination</span>
+              <div className="font-mono text-sm text-[var(--color-accent-violet)]">{route.destination?.iata || '???'}
+                <span className="ml-2 text-[10px] text-[var(--color-text-muted)]">{route.destination?.name || ''}</span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="py-1 font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-muted)]">Route unavailable</div>
+        )}
       </div>
     </Panel>
   )

@@ -5,6 +5,8 @@ import cors from 'cors'
 import { v4 as uuidv4 } from 'uuid'
 import { startIngestionScheduler, getEventSnapshot } from './workers/ingestion.js'
 import flightsRouter from './routes/flights.js'
+import marketsRouter from './routes/markets.js'
+import newsRouter from './routes/news.js'
 import { listSeedMeta } from './cache.js'
 
 const app = express()
@@ -14,6 +16,8 @@ const wss = new WebSocketServer({ server, path: '/ws' })
 app.use(cors())
 app.use(express.json())
 app.use('/api', flightsRouter)
+app.use('/api', marketsRouter)
+app.use('/api', newsRouter)
 
 global.clients = new Set()
 const clients = global.clients

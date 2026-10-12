@@ -70,7 +70,7 @@ function getCache(key) {
  */
 const FEED_TTL = {
   'satellites-iss': 8000,
-  'opensky': 60000,
+  'military-flights': 60000,
   'usgs-earthquakes': 60000,
   'aviation-weather': 300000,
   'eonet-natural-events': 180000,
@@ -78,7 +78,9 @@ const FEED_TTL = {
   'ioda-outages': 120000,
   'threatfox': 300000,
   'urlhaus': 300000,
-  'cisa-kev': 21600000
+  'cisa-kev': 21600000,
+  'space-weather': 300000,
+  'ransomware': 600000
 }
 
 function setCache(key, data) {
@@ -368,55 +370,184 @@ async function fetchURLhaus() {
   }
 }
 
-async function fetchOpenSky() {
-  if (isCircuitOpen('opensky')) return []
-  
+async function fetchMilitaryFlights() {
+  if (isCircuitOpen('adsb-mil')) return []
+
   try {
-    const cached = getCache('opensky')
+    const cached = getCache('military-flights')
     if (cached) return cached
-    
-    const data = await fetchWithRetry('https://opensky-network.org/api/states/all')
-    
-    if (!data.states) return []
-    
-    const events = data.states
-      .filter(s => s[5] !== null && s[6] !== null)
-      .slice(0, 200)
-      .map(s => {
-        const callsign = s[1]?.trim() || 'UNKNOWN'
-        const isMilitary = /^(NATO|MIL|FORCE|AIR|ARMY|NAVY|RESCUE|CUSTOMS|POLICE|COAST|GUARD)/i.test(callsign)
-        
+
+    // Keyless global military ADS-B feed (adsb.lol). Replaces the old OpenSky
+    // call, which was rate-limited into silence.
+    const data = await fetchWithRetry('https://api.adsb.lol/v2/mil')
+
+    const ac = Array.isArray(data.ac) ? data.ac : []
+    const events = ac
+      .filter(a => a.lat != null && a.lon != null && a.alt_baro !== 'ground')
+      .slice(0, 300)
+      .map(a => {
+        const callsign = (a.flight || '').trim() || (a.hex || '').toUpperCase()
+        const altBaro = typeof a.alt_baro === 'number' ? a.alt_baro : null
+        const altGeom = typeof a.alt_geom === 'number' ? a.alt_geom : null
         return {
-          id: generateEventId(),
-          lat: s[6],
-          lng: s[5],
-          severity: isMilitary ? 'high' : 'info',
-          type: isMilitary ? 'military-flight' : 'flight',
-          category: isMilitary ? 'military-flight' : 'flight',
-          title: `${callsign} ${isMilitary ? '● MIL' : ''}`,
+          id: `mil-${a.hex}`,
+          lat: a.lat,
+          lng: a.lon,
+          severity: 'high',
+          type: 'military-flight',
+          category: 'military-flight',
+          title: `${callsign} ● MIL`,
           details: {
-            icao24: s[0],
+            icao24: a.hex,
             callsign,
-            originCountry: s[2],
-            altitude: s[7] ? Math.round(s[7] * 3.28084) : 0,
-            velocity: s[9] ? Math.round(s[9] * 1.94384) : 0,
-            heading: s[10] ? Math.round(s[10]) : 0,
-            verticalRate: s[11],
-            onGround: s[8],
-            military: isMilitary
+            registration: a.r || null,
+            aircraftType: a.t || null,
+            altitude: altBaro ?? altGeom ?? 0,
+            velocity: typeof a.gs === 'number' ? Math.round(a.gs) : 0,
+            heading: typeof a.track === 'number' ? Math.round(a.track) : 0,
+            verticalRate: typeof a.baro_rate === 'number' ? a.baro_rate : 0,
+            squawk: a.squawk || null,
+            military: true
           },
-          source: 'OpenSky',
+          source: 'adsb.lol',
           timestamp: Date.now(),
-          countryCode: s[2]
+          countryCode: null
         }
       })
-    
-    setCache('opensky', events)
-    recordSuccess('opensky')
+
+    setCache('military-flights', events)
+    recordSuccess('adsb-mil')
     return events
   } catch (error) {
-    console.error('OpenSky fetch error:', error.message)
-    recordFailure('opensky')
+    console.error('adsb.lol military fetch error:', error.message)
+    recordFailure('adsb-mil')
+    return []
+  }
+}
+
+async function fetchSpaceWeather() {
+  if (isCircuitOpen('swpc')) return []
+
+  try {
+    const cached = getCache('space-weather')
+    if (cached) return cached
+
+    const now = new Date()
+    const events = []
+
+    // Current geomagnetic/solar/radio storm scales (0-5). Only emitted when
+    // elevated, so quiet days do not manufacture fake incidents.
+    try {
+      const scales = await fetchWithRetry('https://services.swpc.noaa.gov/products/noaa-scales.json')
+      const current = scales?.['0'] || {}
+      const defs = [
+        ['R', 'Radio blackout'],
+        ['S', 'Solar radiation storm'],
+        ['G', 'Geomagnetic storm']
+      ]
+      for (const [key, label] of defs) {
+        const entry = current[key]
+        const scale = parseInt(entry?.Scale, 10)
+        if (!entry || !Number.isFinite(scale) || scale <= 0) continue
+        events.push({
+          id: `swpc-${key}`,
+          lat: 0,
+          lng: 0,
+          geo: false,
+          severity: scale >= 4 ? 'critical' : scale >= 2 ? 'high' : 'medium',
+          type: 'space-weather',
+          category: 'space-weather',
+          title: `${label}: ${key}${scale} · ${entry.Text || 'elevated'}`,
+          details: { scale, scaleKey: key, text: entry.Text || null, dateStamp: current.DateStamp, timeStamp: current.TimeStamp },
+          source: 'NOAA SWPC',
+          timestamp: now.getTime(),
+          countryCode: null
+        })
+      }
+    } catch (e) {
+      console.error('SWPC scales error:', e.message)
+    }
+
+    // Always-on informational status (current X-ray flare class).
+    try {
+      const flares = await fetchWithRetry('https://services.swpc.noaa.gov/json/goes/primary/xray-flares-latest.json')
+      const latest = Array.isArray(flares) ? flares[flares.length - 1] : null
+      if (latest) {
+        events.push({
+          id: 'swpc-xray',
+          lat: 0,
+          lng: 0,
+          geo: false,
+          severity: 'info',
+          type: 'space-weather',
+          category: 'space-weather',
+          title: `Solar X-ray flux: ${latest.current_class || latest.max_class || '—'}`,
+          details: { currentClass: latest.current_class, maxClass: latest.max_class, satellite: latest.satellite },
+          source: 'NOAA SWPC',
+          timestamp: Date.parse(latest.time_tag) || now.getTime(),
+          countryCode: null
+        })
+      }
+    } catch (e) {
+      console.error('SWPC xray error:', e.message)
+    }
+
+    if (!events.length) return []
+    setCache('space-weather', events)
+    recordSuccess('swpc')
+    return events
+  } catch (error) {
+    console.error('Space weather fetch error:', error.message)
+    recordFailure('swpc')
+    return []
+  }
+}
+
+async function fetchRansomware() {
+  if (isCircuitOpen('ransomware')) return []
+
+  try {
+    const cached = getCache('ransomware')
+    if (cached) return cached
+
+    const data = await fetchWithRetry('https://api.ransomware.live/v2/recentvictims')
+    const list = Array.isArray(data) ? data : []
+
+    const events = list.slice(0, 120).map((v, i) => {
+      const cc = (v.country || '').toUpperCase()
+      const centroid = cc ? COUNTRY_CENTROIDS[cc] : null
+      const parsed = Date.parse(v.attackdate || v.discovered)
+      const victim = v.post_title || v.victim || v.domain || `victim-${i}`
+      return {
+        id: `ransom-${v.group || 'unknown'}-${victim}-${parsed || i}`,
+        lat: centroid ? centroid[0] : 0,
+        lng: centroid ? centroid[1] : 0,
+        geo: !!centroid,
+        severity: 'medium',
+        type: 'ransomware',
+        category: 'ransomware',
+        title: `${v.group || 'Unknown'} → ${victim}`,
+        details: {
+          group: v.group || null,
+          victim,
+          domain: v.domain || null,
+          country: cc || null,
+          sector: v.activity || null,
+          description: v.description || null,
+          claimUrl: v.claim_url || null
+        },
+        source: 'ransomware.live',
+        timestamp: Number.isFinite(parsed) ? parsed : Date.now(),
+        countryCode: cc || null
+      }
+    })
+
+    setCache('ransomware', events)
+    recordSuccess('ransomware')
+    return events
+  } catch (error) {
+    console.error('ransomware.live fetch error:', error.message)
+    recordFailure('ransomware')
     return []
   }
 }
@@ -750,7 +881,9 @@ const FEED_KEYS = [
   'cisa-kev',
   'threatfox',
   'urlhaus',
-  'opensky'
+  'military-flights',
+  'space-weather',
+  'ransomware'
 ]
 
 /**
@@ -782,7 +915,9 @@ async function runIngestionCycle() {
       fetchCISAKEV(),
       fetchThreatFox(),
       fetchURLhaus(),
-      fetchOpenSky()
+      fetchMilitaryFlights(),
+      fetchSpaceWeather(),
+      fetchRansomware()
     ])
 
     const allEvents = results.flatMap(r => (r.status === 'fulfilled' ? r.value : []))
@@ -848,5 +983,7 @@ export {
   fetchCISAKEV,
   fetchThreatFox,
   fetchURLhaus,
-  fetchOpenSky
+  fetchMilitaryFlights,
+  fetchSpaceWeather,
+  fetchRansomware
 }

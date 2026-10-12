@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Tv, Signal, AlertTriangle } from 'lucide-react'
 import Hls from 'hls.js'
 import { NEWS_CHANNELS } from '../../utils/constants.js'
+import { useLiveVideo } from '../../hooks/useLiveVideo.js'
 import { Dot } from './ui.jsx'
 
 const HlsPlayer = ({ url, onStatus }) => {
@@ -30,18 +31,26 @@ const HlsPlayer = ({ url, onStatus }) => {
 
 const NewsPlayer = () => {
   const [active, setActive] = useState(NEWS_CHANNELS[0].id)
-  const [status, setStatus] = useState('connecting')
+  const [hlsStatus, setHlsStatus] = useState('connecting')
   const channel = NEWS_CHANNELS.find((c) => c.id === active)
+  const useHls = Boolean(channel.hls)
+  const yt = useLiveVideo({ channel: useHls ? null : channel.youtubeChannel })
 
   const selectChannel = (id) => {
     setActive(id)
-    setStatus('connecting')
+    setHlsStatus('connecting')
   }
+
+  const status = useHls
+    ? hlsStatus
+    : yt.loading
+      ? 'connecting'
+      : yt.error
+        ? 'error'
+        : 'live'
 
   const statusColor = status === 'live' ? '#00ff88' : status === 'connecting' ? '#ffb800' : '#ff3355'
   const statusLabel = status === 'live' ? 'LIVE' : status === 'connecting' ? 'BUFFERING' : 'SIGNAL LOST'
-
-  const useHls = Boolean(channel.hls)
 
   return (
     <div className="flex flex-col h-full">
@@ -59,19 +68,17 @@ const NewsPlayer = () => {
 
       <div className="relative flex-1 min-h-0 rounded border border-[var(--color-border-primary)] bg-black overflow-hidden">
         {useHls ? (
-          <HlsPlayer key={channel.id} url={channel.hls} onStatus={setStatus} />
-        ) : (
+          <HlsPlayer key={channel.id} url={channel.hls} onStatus={setHlsStatus} />
+        ) : yt.videoId ? (
           <iframe
-            key={channel.id}
+            key={yt.videoId}
             title={channel.label}
             className="w-full h-full"
-            src={`https://www.youtube.com/embed/live_stream?channel=${channel.youtubeChannel}&autoplay=1&mute=1&playsinline=1&modestbranding=1&rel=0&iv_load_policy=3`}
+            src={`https://www.youtube.com/embed/${yt.videoId}?autoplay=1&mute=1&playsinline=1&modestbranding=1&rel=0&iv_load_policy=3`}
             allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
             allowFullScreen
-            onLoad={() => setStatus('live')}
-            onError={() => setStatus('error')}
           />
-        )}
+        ) : null}
 
         <div className="absolute top-1.5 left-1.5 flex items-center gap-1.5 px-1.5 py-0.5 rounded-sm bg-black/70 border border-[var(--color-border-primary)] pointer-events-none">
           <Tv className="w-3 h-3 text-[var(--color-accent-cyan)]" />

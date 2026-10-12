@@ -4,12 +4,13 @@ import {
   Command, X, ChevronRight, Globe, Plane, Ship, 
   Shield, Anchor, Waves, AlertTriangle, Zap,
   Radio, MapPin, Search, Keyboard, ExternalLink,
-  Copy, Eye, EyeOff, Layers, Filter
+  Copy, Eye, EyeOff, Layers, Filter, Share2, Crosshair, Bot, ScrollText
 } from 'lucide-react'
 import { useCommandPalette } from '../hooks/useCommandPalette.js'
 import { useEvents } from '../context/EventContext.jsx'
 import { useMapLayers } from '../context/MapLayerContext.jsx'
 import { useUI } from '../context/UIContext.jsx'
+import { useOntology } from '../context/OntologyContext.jsx'
 import { formatTimestamp, getSeverityColor, getCountryName } from '../utils/helpers.js'
 
 const ICON_MAP = {
@@ -34,6 +35,7 @@ const CommandPalette = ({ isOpen, onClose }) => {
   const { events, getFilteredEvents } = useEvents()
   const { activeLayers, toggleLayer, layerGroups } = useMapLayers()
   const { toggleSidebar, sidebars } = useUI()
+  const { toggleSuite } = useOntology()
   
   const inputRef = useRef(null)
   const listRef = useRef(null)
@@ -179,6 +181,31 @@ const CommandPalette = ({ isOpen, onClose }) => {
                 desc="View country instability index"
                 icon={Globe}
                 onClick={() => { toggleSidebar('dossier', true); onClose(); }}
+              />
+              <div className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-muted)] mt-4 mb-2 px-2">COMMAND SUITE</div>
+              <QuickAction
+                label="OPEN OBJECT EXPLORER"
+                desc="Gotham-style entity graph & object fusion"
+                icon={Share2}
+                onClick={() => { toggleSuite('explorer', true); onClose(); }}
+              />
+              <QuickAction
+                label="TOGGLE TARGETING HUD"
+                desc="Classification boxes & sensor pairing"
+                icon={Crosshair}
+                onClick={() => { toggleSuite('targeting'); onClose(); }}
+              />
+              <QuickAction
+                label="OPEN AIP ASSISTANT"
+                desc="Analyst terminal + audit trail"
+                icon={Bot}
+                onClick={() => { toggleSuite('aip', true); onClose(); }}
+              />
+              <QuickAction
+                label="OPEN AUDIT TRAIL"
+                desc="Immutable human-in-the-loop log"
+                icon={ScrollText}
+                onClick={() => { toggleSuite('audit', true); onClose(); }}
               />
               <QuickAction 
                 label="ENABLE ALL LAYERS" 

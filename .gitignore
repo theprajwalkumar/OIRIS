@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Secrets — never commit provider credentials
+credentials.json
+.env
+.env.*
+*.pem
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

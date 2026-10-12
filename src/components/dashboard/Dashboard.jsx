@@ -5,9 +5,10 @@ import NewsPlayer from './NewsPlayer.jsx'
 import { WebcamsPanel, FeedCoveragePanel, BreakingTicker, GlobalSituationHeader } from './BroadcastPanels.jsx'
 import { CIIPanel, ConflictZonesPanel, CriticalAlertsPanel, IntelStatsStrip } from './IntelPanels.jsx'
 import { CyberAttackMapPanel, ThreatAgentsPanel, CisaKevPanel, PhishingMalwarePanel } from './CyberPanels.jsx'
-import { AircraftMetricsPanel, FlightDataPanel, GlobalFlightRadarPanel, LocalRadarPanel } from './AviationPanels.jsx'
+import { AircraftMetricsPanel, FlightDataPanel, FlightDetailPanel, GlobalFlightRadarPanel, LocalRadarPanel } from './AviationPanels.jsx'
 import { MaritimeAisPanel, CablesPipelinesPanel, PowerGridPanel, SpacePanel } from './MaritimePanels.jsx'
 import { EarthquakesPanel, WildfiresWeatherPanel } from './DisasterPanels.jsx'
+import MarketsPanel from './MarketsPanels.jsx'
 import GlobalFooter from './GlobalFooter.jsx'
 import { Panel, SectionDivider } from './ui.jsx'
 
@@ -56,6 +57,11 @@ const Dashboard = ({ onOpenSearch }) => {
             <CriticalAlertsPanel />
           </Row>
 
+          <SectionDivider label="Markets · Economy" accent="var(--color-accent-emerald)" />
+          <Row className="grid-cols-1">
+            <MarketsPanel />
+          </Row>
+
           <SectionDivider label="Cyber & Threat Intelligence" accent="var(--color-accent-crimson)" />
           <Row className="grid-cols-1 lg:grid-cols-3">
             <CyberAttackMapPanel />
@@ -74,6 +80,9 @@ const Dashboard = ({ onOpenSearch }) => {
           <Row className="grid-cols-1 lg:grid-cols-3">
             <div className="lg:col-span-2"><LocalRadarPanel /></div>
             <FlightDataPanel />
+          </Row>
+          <Row className="grid-cols-1">
+            <FlightDetailPanel />
           </Row>
 
           <SectionDivider label="Maritime · Infrastructure · Space" accent="var(--color-accent-cyan)" />
