@@ -1,0 +1,9 @@
+# Exclude the backend + deployment blueprints from the static frontend deploy
+# so Vercel does not treat them as services/functions.
+server
+scripts
+credentials.json
+render.yaml
+Procfile
+.env.example
+*.log

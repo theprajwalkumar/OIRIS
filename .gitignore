@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
+.vercel
 
 # Secrets — never commit provider credentials
 credentials.json
@@ -29,3 +30,4 @@ credentials.json
 *.njsproj
 *.sln
 *.sw?
+.vercel
