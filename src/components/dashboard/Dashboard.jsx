@@ -9,13 +9,13 @@ import { SECTION_IDS, railIdFor } from '../../config/sections.js'
 // until phases 3-4 replace each section's contents.
 import Stage from './Stage.jsx'
 import NewsPlayer from './NewsPlayer.jsx'
-import { WebcamsPanel, FeedCoveragePanel, BreakingTicker } from './BroadcastPanels.jsx'
-import { CIIPanel, ConflictZonesPanel, CriticalAlertsPanel, IntelStatsStrip } from './IntelPanels.jsx'
-import { CyberAttackMapPanel, ThreatAgentsPanel, CisaKevPanel, PhishingMalwarePanel } from './CyberPanels.jsx'
+import { WebcamsPanel, BreakingTicker } from './BroadcastPanels.jsx'
+import InstabilitySection from '../sections/InstabilitySection.jsx'
+import MarketsSection from '../sections/MarketsSection.jsx'
+import CyberSection from '../sections/CyberSection.jsx'
 import { AircraftMetricsPanel, FlightDataPanel, FlightDetailPanel, GlobalFlightRadarPanel, LocalRadarPanel } from './AviationPanels.jsx'
 import { MaritimeAisPanel, CablesPipelinesPanel, PowerGridPanel, SpacePanel } from './MaritimePanels.jsx'
 import { EarthquakesPanel, WildfiresWeatherPanel } from './DisasterPanels.jsx'
-import MarketsPanel from './MarketsPanels.jsx'
 import GlobalFooter from './GlobalFooter.jsx'
 
 const Dashboard = () => {
@@ -53,15 +53,7 @@ const Dashboard = () => {
               description="Regional instability index with 24-hour movement, active conflict zones, and how much signal we are receiving."
               status="12 feeds nominal"
             >
-              <IntelStatsStrip />
-              <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
-                <CIIPanel />
-                <ConflictZonesPanel />
-                <CriticalAlertsPanel />
-              </div>
-              <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
-                <FeedCoveragePanel />
-              </div>
+              <InstabilitySection />
             </Section>
 
             <Section
@@ -69,7 +61,7 @@ const Dashboard = () => {
               title="Markets and economy"
               description="India and world markets side by side, with 24-hour movement."
             >
-              <MarketsPanel />
+              <MarketsSection />
             </Section>
 
             <Section
@@ -77,14 +69,7 @@ const Dashboard = () => {
               title="Cyber and threat intelligence"
               description="Attack flows between origin and target countries, tracked threat families, and known exploited vulnerabilities."
             >
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-                <CyberAttackMapPanel />
-                <ThreatAgentsPanel />
-                <CisaKevPanel />
-              </div>
-              <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
-                <PhishingMalwarePanel />
-              </div>
+              <CyberSection />
             </Section>
 
             <Section
