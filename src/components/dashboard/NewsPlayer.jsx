@@ -49,24 +49,24 @@ const NewsPlayer = () => {
         ? 'error'
         : 'live'
 
-  const statusColor = status === 'live' ? '#00ff88' : status === 'connecting' ? '#ffb800' : '#ff3355'
+  const statusColor = status === 'live' ? '#7CD3EA' : status === 'connecting' ? '#F0AE4B' : '#FF5E4F'
   const statusLabel = status === 'live' ? 'LIVE' : status === 'connecting' ? 'BUFFERING' : 'SIGNAL LOST'
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center gap-1 flex-wrap border-b border-[var(--color-border-primary)] pb-1.5 mb-1.5 shrink-0">
+      <div className="mb-3 flex shrink-0 flex-wrap items-center gap-1 border-b border-[var(--color-line)] pb-2">
         {NEWS_CHANNELS.map((c) => (
           <button
             key={c.id}
             onClick={() => selectChannel(c.id)}
-            className={`px-1.5 py-0.5 rounded-sm font-mono text-[9px] tracking-wider transition-colors ${active === c.id ? 'bg-[var(--color-accent-crimson)] text-white font-bold' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]'}`}
+            className={`rounded-full px-2.5 py-0.5 text-xs transition-colors ${active === c.id ? 'bg-[var(--color-coral)] font-medium text-[var(--color-ink)]' : 'text-[var(--color-faint)] hover:text-[var(--color-bone)]'}`}
           >
             {c.short}
           </button>
         ))}
       </div>
 
-      <div className="relative flex-1 min-h-0 rounded border border-[var(--color-border-primary)] bg-black overflow-hidden">
+      <div className="relative min-h-0 flex-1 overflow-hidden rounded-lg border border-[var(--color-line)] bg-black">
         {useHls ? (
           <HlsPlayer key={channel.id} url={channel.hls} onStatus={setHlsStatus} />
         ) : yt.videoId ? (
@@ -81,29 +81,29 @@ const NewsPlayer = () => {
         ) : null}
 
         <div className="absolute top-1.5 left-1.5 flex items-center gap-1.5 px-1.5 py-0.5 rounded-sm bg-black/70 border border-[var(--color-border-primary)] pointer-events-none">
-          <Tv className="w-3 h-3 text-[var(--color-accent-cyan)]" />
-          <span className="font-mono text-[9px] uppercase tracking-wider text-[var(--color-text-primary)]">{channel.label}</span>
+          <Tv className="h-3 w-3 text-[var(--color-ice)]" />
+          <span className="text-xs text-[var(--color-bone)]">{channel.label}</span>
         </div>
 
         <div className="absolute top-1.5 right-1.5 flex items-center gap-1.5 px-1.5 py-0.5 rounded-sm bg-black/70 border border-[var(--color-border-primary)] pointer-events-none">
           <Dot color={statusColor} pulse={status === 'live'} />
-          <span className="font-mono text-[9px] tracking-wider" style={{ color: statusColor }}>{statusLabel}</span>
+          <span className="text-xs" style={{ color: statusColor }}>{statusLabel}</span>
         </div>
 
         {status === 'error' && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-black/80">
-            <AlertTriangle className="w-5 h-5 text-[var(--color-accent-crimson)]" />
-            <span className="font-mono text-[10px] text-[var(--color-text-muted)]">FEED UNAVAILABLE · SELECT ANOTHER CHANNEL</span>
+            <AlertTriangle className="h-5 w-5 text-[var(--color-coral)]" />
+            <span className="text-xs text-[var(--color-mute)]">Feed unavailable · select another channel</span>
           </div>
         )}
 
-        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[var(--color-accent-cyan)] to-transparent opacity-40" />
+        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[var(--color-ice)] to-transparent opacity-40" />
       </div>
 
-      <div className="flex items-center justify-between mt-1.5 shrink-0">
-        <span className="font-mono text-[8px] uppercase tracking-widest text-[var(--color-text-muted)]">Live News Channel · YouTube / HLS</span>
-        <span className="flex items-center gap-1 font-mono text-[8px] text-[var(--color-text-muted)]">
-          <Signal className="w-3 h-3" /> AUTO-REFRESH ON SWITCH
+      <div className="mt-2 flex shrink-0 items-center justify-between">
+        <span className="text-[11px] text-[var(--color-faint)]">Live news channel · YouTube / HLS</span>
+        <span className="flex items-center gap-1 text-[11px] text-[var(--color-faint)]">
+          <Signal className="h-3 w-3" /> Auto-refresh on switch
         </span>
       </div>
     </div>

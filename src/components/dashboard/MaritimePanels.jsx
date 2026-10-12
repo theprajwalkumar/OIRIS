@@ -43,7 +43,7 @@ export const MaritimeAisPanel = () => {
         ))}
       </div>
 
-      <div className="font-mono text-[8px] uppercase tracking-widest text-[var(--color-text-muted)] mb-1">Ports Activity</div>
+      <div className="mb-1 text-xs text-[var(--color-mute)]">Ports activity</div>
       <div className="space-y-0.5 mb-1.5">
         {MARITIME_PORTS.slice(0, 5).map((p) => (
           <div key={p.id} className="flex items-center gap-2">
@@ -55,13 +55,14 @@ export const MaritimeAisPanel = () => {
       </div>
 
       <DataTable columns={cols} rows={vessels.slice(0, 12)} rowKey={(v) => v.id} maxHeight="16vh" compact />
+      <p className="mt-2 text-[11px] text-[var(--color-faint)]">AIS vessels, dark ships and port activity are modelled reference data.</p>
     </Panel>
   )
 }
 
 export const CablesPipelinesPanel = () => (
   <Panel title="Submarine Cables & Pipelines" icon={Cable} accent="var(--color-accent-amber)">
-    <div className="font-mono text-[8px] uppercase tracking-widest text-[var(--color-text-muted)] mb-1">Submarine Cables</div>
+    <div className="mb-1 text-xs text-[var(--color-mute)]">Submarine cables</div>
     <div className="space-y-0.5 mb-2">
       {SUBMARINE_CABLES.map((c) => (
         <div key={c.id} className="flex items-center gap-2">
@@ -73,7 +74,7 @@ export const CablesPipelinesPanel = () => (
       ))}
     </div>
 
-    <div className="font-mono text-[8px] uppercase tracking-widest text-[var(--color-text-muted)] mb-1">Pipelines</div>
+    <div className="mb-1 text-xs text-[var(--color-mute)]">Pipelines</div>
     <div className="space-y-0.5">
       {PIPELINES.map((p) => (
         <div key={p.id} className="flex items-center gap-2">
@@ -83,6 +84,7 @@ export const CablesPipelinesPanel = () => (
         </div>
       ))}
     </div>
+    <p className="mt-2 text-[11px] text-[var(--color-faint)]">Cable and pipeline inventory is static reference data.</p>
   </Panel>
 )
 
@@ -121,6 +123,7 @@ export const PowerGridPanel = () => {
         ))}
         {outages.length === 0 && <div className="font-mono text-[9px] text-[var(--color-text-muted)] text-center py-1">AWAITING IODA…</div>}
       </div>
+      <p className="mt-2 text-[11px] text-[var(--color-faint)]">Outages are live from IODA; regional load is modelled.</p>
     </Panel>
   )
 }
@@ -156,6 +159,7 @@ export const SpacePanel = () => {
         </div>
       )}
       <DataTable columns={cols} rows={sats} rowKey={(s) => s.id} maxHeight="22vh" compact />
+      <p className="mt-2 text-[11px] text-[var(--color-faint)]">Pass windows are modelled; ISS position is live from the satellite feed.</p>
     </Panel>
   )
 }

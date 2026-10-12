@@ -1,87 +1,88 @@
 import React from 'react'
 
+// Design-system severity/status palette (Project Next Level tokens).
 export const SEV_COLOR = {
-  critical: '#ff3355',
-  high: '#ffb800',
-  medium: '#00d4ff',
-  info: '#00ff88',
-  low: '#64748b',
-  nominal: '#00ff88',
-  caution: '#ffb800',
-  elevated: '#ffb800',
-  stable: '#00ff88',
-  degraded: '#ffb800',
-  operational: '#00ff88',
-  active: '#ff3355',
-  tracking: '#00ff88',
-  standby: '#64748b'
+  critical: '#FF5E4F',
+  high: '#F0AE4B',
+  medium: '#7CD3EA',
+  info: '#7E93A6',
+  low: '#4C6176',
+  nominal: '#7CD3EA',
+  caution: '#F0AE4B',
+  elevated: '#F0AE4B',
+  stable: '#7CD3EA',
+  degraded: '#F0AE4B',
+  operational: '#7CD3EA',
+  active: '#FF5E4F',
+  tracking: '#7CD3EA',
+  standby: '#4C6176'
 }
 
-export const sevColor = (s) => SEV_COLOR[s] || '#64748b'
+export const sevColor = (s) => SEV_COLOR[s] || '#4C6176'
 
-export const Panel = ({ title, icon: Icon, accent = 'var(--color-accent-cyan)', right, children, className = '', dense = false, style }) => (
+export const Panel = ({ title, icon: Icon, accent = 'var(--color-ice)', right, children, className = '', dense = false, style }) => (
   <section
-    className={`panel-glass border border-[var(--color-border-primary)] rounded-md overflow-hidden flex flex-col ${className}`}
+    className={`flex flex-col overflow-hidden rounded-[14px] border border-[var(--color-line)] bg-[var(--color-panel)] ${className}`}
     style={style}
   >
-    <header className="flex items-center justify-between gap-2 px-2.5 py-1.5 border-b border-[var(--color-border-primary)] bg-black/30 shrink-0">
-      <div className="flex items-center gap-1.5 min-w-0">
-        {Icon && <Icon className="w-3.5 h-3.5 shrink-0" style={{ color: accent }} />}
-        <h3 className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-text-primary)] truncate">{title}</h3>
+    <header className="flex shrink-0 items-center justify-between gap-2 border-b border-[var(--color-line)] px-4 py-2.5">
+      <div className="flex min-w-0 items-center gap-2">
+        {Icon && <Icon className="h-4 w-4 shrink-0" style={{ color: accent }} strokeWidth={1.75} />}
+        <h3 className="truncate text-sm font-medium text-[var(--color-bone)]">{title}</h3>
       </div>
-      {right && <div className="flex items-center gap-2 shrink-0">{right}</div>}
+      {right && <div className="flex shrink-0 items-center gap-2">{right}</div>}
     </header>
-    <div className={dense ? 'flex-1 min-h-0' : 'flex-1 min-h-0 p-2.5'}>{children}</div>
+    <div className={dense ? 'min-h-0 flex-1' : 'min-h-0 flex-1 p-4'}>{children}</div>
   </section>
 )
 
-export const Dot = ({ color = '#00ff88', pulse = false, size = 6 }) => (
+export const Dot = ({ color = '#7CD3EA', pulse = false, size = 6 }) => (
   <span className="relative inline-flex shrink-0" style={{ width: size, height: size }}>
     {pulse && (
-      <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-50" style={{ background: color }} />
+      <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-50" style={{ background: color }} />
     )}
-    <span className="relative inline-flex rounded-full h-full w-full" style={{ background: color }} />
+    <span className="relative inline-flex h-full w-full rounded-full" style={{ background: color }} />
   </span>
 )
 
-export const Pill = ({ color = '#64748b', children, className = '' }) => (
+export const Pill = ({ color = '#4C6176', children, className = '' }) => (
   <span
-    className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm font-mono text-[9px] uppercase tracking-wider ${className}`}
-    style={{ color, background: `${color}1a`, border: `1px solid ${color}33` }}
+    className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs ${className}`}
+    style={{ color, borderColor: `${color}55`, background: `${color}14` }}
   >
     {children}
   </span>
 )
 
-export const StatTile = ({ label, value, sub, color = 'var(--color-accent-cyan)', icon: Icon, className = '' }) => (
-  <div className={`panel-glass rounded border border-[var(--color-border-primary)] px-2.5 py-2 flex flex-col justify-between ${className}`}>
+export const StatTile = ({ label, value, sub, color = 'var(--color-ice)', icon: Icon, className = '' }) => (
+  <div className={`flex flex-col justify-between rounded-lg border border-[var(--color-line)] px-3 py-2 ${className}`}>
     <div className="flex items-center justify-between">
-      <span className="font-mono text-[9px] uppercase tracking-widest text-[var(--color-text-muted)]">{label}</span>
-      {Icon && <Icon className="w-3 h-3" style={{ color }} />}
+      <span className="text-xs text-[var(--color-mute)]">{label}</span>
+      {Icon && <Icon className="h-3.5 w-3.5" style={{ color }} strokeWidth={1.75} />}
     </div>
-    <div className="font-mono text-lg leading-none mt-1.5" style={{ color }}>{value}</div>
-    {sub != null && <div className="font-mono text-[9px] text-[var(--color-text-muted)] mt-1 truncate">{sub}</div>}
+    <div className="mt-1.5 font-serif text-2xl leading-none" style={{ color }}>{value}</div>
+    {sub != null && <div className="mt-1 truncate text-[11px] text-[var(--color-faint)]">{sub}</div>}
   </div>
 )
 
-export const Bar = ({ value = 0, color = '#00d4ff', height = 4, track = 'rgba(255,255,255,0.06)' }) => (
-  <div className="w-full rounded-full overflow-hidden" style={{ height, background: track }}>
+export const Bar = ({ value = 0, color = '#7CD3EA', height = 4, track = 'var(--color-line)' }) => (
+  <div className="w-full overflow-hidden rounded-full" style={{ height, background: track }}>
     <div
       className="h-full rounded-full transition-all duration-700"
-      style={{ width: `${Math.max(0, Math.min(1, value)) * 100}%`, background: color, boxShadow: `0 0 8px ${color}88` }}
+      style={{ width: `${Math.max(0, Math.min(1, value)) * 100}%`, background: color }}
     />
   </div>
 )
 
-export const DataTable = ({ columns, rows, empty = 'NO DATA', rowKey = (r, i) => i, maxHeight, compact = false }) => (
+export const DataTable = ({ columns, rows, empty = 'No data', rowKey = (r, i) => i, maxHeight, compact = false }) => (
   <div className="overflow-auto" style={{ maxHeight, scrollbarWidth: 'thin' }}>
     <table className="w-full border-collapse">
-      <thead className="sticky top-0 z-10 bg-[var(--color-bg-secondary)]">
+      <thead className="sticky top-0 z-10 bg-[var(--color-panel)]">
         <tr>
           {columns.map((c) => (
             <th
               key={c.key}
-              className={`text-left font-mono text-[9px] uppercase tracking-wider text-[var(--color-text-muted)] border-b border-[var(--color-border-primary)] ${compact ? 'px-1.5 py-1' : 'px-2 py-1.5'}`}
+              className={`border-b border-[var(--color-line)] text-left text-[11px] font-normal text-[var(--color-faint)] ${compact ? 'px-1.5 py-1' : 'px-2 py-1.5'}`}
               style={{ width: c.width, textAlign: c.align || 'left' }}
             >
               {c.label}
@@ -92,15 +93,15 @@ export const DataTable = ({ columns, rows, empty = 'NO DATA', rowKey = (r, i) =>
       <tbody>
         {rows.length === 0 && (
           <tr>
-            <td colSpan={columns.length} className="px-2 py-3 text-center font-mono text-[10px] text-[var(--color-text-muted)]">{empty}</td>
+            <td colSpan={columns.length} className="px-2 py-3 text-center text-[12px] text-[var(--color-faint)]">{empty}</td>
           </tr>
         )}
         {rows.map((r, i) => (
-          <tr key={rowKey(r, i)} className="hover:bg-white/[0.03] transition-colors">
+          <tr key={rowKey(r, i)} className="transition-colors hover:bg-white/[0.03]">
             {columns.map((c) => (
               <td
                 key={c.key}
-                className={`font-mono ${compact ? 'text-[10px] px-1.5 py-1' : 'text-[10px] px-2 py-1.5'} text-[var(--color-text-secondary)] border-b border-[var(--color-border-primary)]/40 align-top`}
+                className={`border-b border-[var(--color-line)]/60 text-[12px] text-[var(--color-mute)] ${compact ? 'px-1.5 py-1' : 'px-2 py-1.5'} align-top`}
                 style={{ textAlign: c.align || 'left' }}
               >
                 {c.render ? c.render(r) : r[c.key]}
@@ -113,12 +114,10 @@ export const DataTable = ({ columns, rows, empty = 'NO DATA', rowKey = (r, i) =>
   </div>
 )
 
-export const SectionDivider = ({ label, accent = 'var(--color-accent-cyan)' }) => (
-  <div className="flex items-center gap-3 my-1">
-    <span className="font-mono text-[10px] uppercase tracking-[0.35em] whitespace-nowrap" style={{ color: accent }}>
-      ◤ {label}
-    </span>
-    <span className="h-px flex-1" style={{ background: 'linear-gradient(90deg, currentColor, transparent)', color: accent, opacity: 0.4 }} />
+export const SectionDivider = ({ label, accent = 'var(--color-ice)' }) => (
+  <div className="my-1 flex items-center gap-3">
+    <span className="whitespace-nowrap text-xs" style={{ color: accent }}>{label}</span>
+    <span className="h-px flex-1 bg-[var(--color-line)]" />
   </div>
 )
 
