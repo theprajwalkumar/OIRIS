@@ -2,6 +2,8 @@ import { Router } from 'express'
 import fetch from 'node-fetch'
 import { readFileSync } from 'node:fs'
 import { promises as dns } from 'node:dns'
+import net from 'node:net'
+import tls from 'node:tls'
 import {
   createCache,
   cachedFetchJson,
@@ -448,6 +450,34 @@ router.get('/aircraft', async (req, res) => {
 })
 
 // TEMP diagnostic for OpenSky reachability from this host — remove after use.
+const tcpTest = (host, port = 443, timeout = 8000) =>
+  new Promise((resolve) => {
+    const t = Date.now()
+    const sock = net.connect(port, host)
+    const done = (ok, extra = {}) => {
+      try { sock.destroy() } catch { /* ignore */ }
+      resolve({ ok, ms: Date.now() - t, ...extra })
+    }
+    sock.setTimeout(timeout)
+    sock.on('connect', () => done(true))
+    sock.on('timeout', () => done(false, { error: 'timeout' }))
+    sock.on('error', (e) => done(false, { error: e.code || e.message }))
+  })
+
+const tlsTest = (host, timeout = 8000) =>
+  new Promise((resolve) => {
+    const t = Date.now()
+    const sock = tls.connect({ host, port: 443, servername: host })
+    const done = (ok, extra = {}) => {
+      try { sock.destroy() } catch { /* ignore */ }
+      resolve({ ok, ms: Date.now() - t, ...extra })
+    }
+    sock.setTimeout(timeout)
+    sock.on('secureConnect', () => done(true, { authorized: sock.authorized }))
+    sock.on('timeout', () => done(false, { error: 'timeout' }))
+    sock.on('error', (e) => done(false, { error: e.code || e.message }))
+  })
+
 router.get('/_diag/opensky', async (req, res) => {
   const out = { host: process.env.RENDER_SERVICE_NAME || 'local', hasCreds: Boolean(openskyCreds?.clientId) }
   const timeIt = async (fn) => {
@@ -464,6 +494,10 @@ router.get('/_diag/opensky', async (req, res) => {
   } catch (e) {
     out.dns = `err: ${e.message}`
   }
+  out.tcp_opensky = await tcpTest('194.209.200.34')
+  out.tcp_control = await tcpTest('api.adsb.lol')
+  out.tls_auth_opensky = await tlsTest('auth.opensky-network.org')
+  out.tls_opensky = await tlsTest('opensky-network.org')
   out.token = await timeIt(async () => ({ tokenLen: (await getOpenSkyToken())?.length || 0 }))
   out.states = await timeIt(async () => {
     const r = await fetchJSON(OPENSKY_URL, OPENSKY_TIMEOUT, { Authorization: `Bearer ${await getOpenSkyToken()}` })
