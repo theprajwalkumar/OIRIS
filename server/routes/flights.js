@@ -498,6 +498,28 @@ router.get('/_diag/opensky', async (req, res) => {
   out.tcp_control = await tcpTest('api.adsb.lol')
   out.tls_auth_opensky = await tlsTest('auth.opensky-network.org')
   out.tls_opensky = await tlsTest('opensky-network.org')
+
+  const probe = async (url) => {
+    const controller = new AbortController()
+    const to = setTimeout(() => controller.abort(), 8000)
+    const t = Date.now()
+    try {
+      const res = await fetch(url, {
+        signal: controller.signal,
+        headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36', Accept: '*/*' }
+      })
+      return { ok: res.ok, status: res.status, ms: Date.now() - t }
+    } catch (e) {
+      return { ok: false, ms: Date.now() - t, name: e.name, error: e.message }
+    } finally {
+      clearTimeout(to)
+    }
+  }
+  out.tcp_yahoo = await tcpTest('query1.finance.yahoo.com')
+  out.yahoo = await probe('https://query1.finance.yahoo.com/v8/finance/chart/%5ENSEI?interval=5m&range=1d')
+  out.tcp_youtube = await tcpTest('www.youtube.com')
+  out.youtube_oembed = await probe(`https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=SChm4DyivOU')}&format=json`)
+
   out.token = await timeIt(async () => ({ tokenLen: (await getOpenSkyToken())?.length || 0 }))
   out.states = await timeIt(async () => {
     const r = await fetchJSON(OPENSKY_URL, OPENSKY_TIMEOUT, { Authorization: `Bearer ${await getOpenSkyToken()}` })
