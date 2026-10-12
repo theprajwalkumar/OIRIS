@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import fetch from 'node-fetch'
 import { readFileSync } from 'node:fs'
+import { promises as dns } from 'node:dns'
 import {
   createCache,
   cachedFetchJson,
@@ -172,9 +173,18 @@ async function getOpenSkyToken() {
 }
 
 async function fetchOpenSkyAuthed() {
-  const token = await getOpenSkyToken()
+  let token
+  try {
+    token = await getOpenSkyToken()
+  } catch (err) {
+    throw new Error(`token stage: ${err.name}: ${err.message}${err.cause?.message ? ` / ${err.cause.message}` : ''}`)
+  }
   if (!token) throw new Error('OpenSky auth unavailable')
-  return fetchJSON(OPENSKY_URL, OPENSKY_TIMEOUT, { Authorization: `Bearer ${token}` })
+  try {
+    return await fetchJSON(OPENSKY_URL, OPENSKY_TIMEOUT, { Authorization: `Bearer ${token}` })
+  } catch (err) {
+    throw new Error(`states stage: ${err.name}: ${err.message}${err.cause?.message ? ` / ${err.cause.message}` : ''}`)
+  }
 }
 
 function altitudeFt(baro, geom) {
@@ -435,6 +445,31 @@ router.get('/aircraft', async (req, res) => {
     console.error('[aircraft] adsbdb fetch failed:', err.message)
     res.status(502).json({ found: false, icao24, error: err.message })
   }
+})
+
+// TEMP diagnostic for OpenSky reachability from this host — remove after use.
+router.get('/_diag/opensky', async (req, res) => {
+  const out = { host: process.env.RENDER_SERVICE_NAME || 'local', hasCreds: Boolean(openskyCreds?.clientId) }
+  const timeIt = async (fn) => {
+    const t = Date.now()
+    try {
+      const r = await fn()
+      return { ok: true, ms: Date.now() - t, ...r }
+    } catch (e) {
+      return { ok: false, ms: Date.now() - t, name: e.name, error: e.message, code: e.code, cause: e.cause?.message || e.cause?.code }
+    }
+  }
+  try {
+    out.dns = await dns.lookup('opensky-network.org', { all: true })
+  } catch (e) {
+    out.dns = `err: ${e.message}`
+  }
+  out.token = await timeIt(async () => ({ tokenLen: (await getOpenSkyToken())?.length || 0 }))
+  out.states = await timeIt(async () => {
+    const r = await fetchJSON(OPENSKY_URL, OPENSKY_TIMEOUT, { Authorization: `Bearer ${await getOpenSkyToken()}` })
+    return { count: Array.isArray(r.states) ? r.states.length : null }
+  })
+  res.json(out)
 })
 
 export default router
