@@ -78,7 +78,7 @@ async function fetchJSON(url, timeoutMs = FETCH_TIMEOUT) {
     const res = await fetch(url, {
       signal: controller.signal,
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; WorldMonitor/1.0; OSINT dashboard)',
+        'User-Agent': 'Mozilla/5.0 (compatible; Osiris/1.0; OSINT dashboard)',
         Accept: 'application/json'
       }
     })

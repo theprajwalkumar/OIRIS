@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import { Zap } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { EventProvider, useEvents } from './context/EventContext.jsx'
 import { WSProvider } from './context/WSContext.jsx'
@@ -26,7 +25,7 @@ L.Icon.Default.mergeOptions({
 })
 
 const INIT_LINES = [
-  'BOOT SEQ · WORLD MONITOR CORE',
+  'BOOT SEQ · OSIRIS CORE',
   'LINKING GEOSPATIAL TILE MESH ......... OK',
   'MOUNTING EVENT BUS / WEBSOCKET ....... OK',
   'AUTH FEEDS · USGS · EONET · GDACS .... OK',
@@ -41,12 +40,9 @@ const InitScreen = () => (
     <div className="absolute inset-0 vignette pointer-events-none" aria-hidden="true" />
     <div className="relative text-center px-6">
       <div className="flex items-center justify-center gap-3 mb-5">
-        <div className="w-14 h-14 rounded-lg border border-[var(--color-accent-emerald)] flex items-center justify-center animate-pulse"
-          style={{ boxShadow: '0 0 24px rgba(0,255,136,0.25), inset 0 0 18px rgba(0,255,136,0.12)' }}>
-          <Zap className="w-7 h-7 text-[var(--color-accent-emerald)]" />
-        </div>
+        <img src="/assets/osiris-emblem.svg" alt="OSIRIS COMMAND" className="w-20 h-20 filter-cyan-glow" />
       </div>
-      <p className="font-mono text-lg text-[var(--color-text-primary)] tracking-[0.3em] glow-emerald">WORLD&nbsp;MONITOR</p>
+      <p className="font-mono text-lg text-[var(--color-accent-cyan)] tracking-[0.3em] glow-cyan">OSIRIS</p>
       <p className="font-mono text-[10px] text-[var(--color-text-muted)] mt-1 tracking-[0.4em]">GLOBAL SITUATIONAL AWARENESS</p>
 
       <div className="mt-7 w-72 mx-auto text-left space-y-1">

@@ -5,7 +5,7 @@
  *   - same-origin: dev Vite proxy, or frontend + backend co-hosted. Leave
  *     `VITE_API_BASE` unset.
  *   - split: the static frontend (e.g. Vercel) talks to a separately deployed
- *     backend. Set `VITE_API_BASE` (e.g. https://world-monitor-api.onrender.com)
+ *     backend. Set `VITE_API_BASE` (e.g. https://osiris-api.onrender.com)
  *     so REST + WebSocket resolve to that host.
  */
 const trimBase = (value) => String(value || '').trim().replace(/\/+$/, '')

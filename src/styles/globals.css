@@ -16,7 +16,8 @@
   --color-accent-cyan: #00d4ff;
   --color-accent-violet: #b84dff;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
-  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-sans: 'Geist', 'Inter', system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
   --shadow-glow-emerald: 0 0 20px rgba(0, 255, 136, 0.3), 0 0 40px rgba(0, 255, 136, 0.1);
   --shadow-glow-amber: 0 0 20px rgba(255, 184, 0, 0.3), 0 0 40px rgba(255, 184, 0, 0.1);
   --shadow-glow-crimson: 0 0 20px rgba(255, 51, 85, 0.3), 0 0 40px rgba(255, 51, 85, 0.1);
@@ -25,6 +26,22 @@
   --animate-pulse-slow: pulse 3s ease-in-out infinite;
   --animate-scan: scan 2s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
+
+  /* ── Project Next Level design tokens ───────────────────────────── */
+  --color-ink: #050D14;
+  --color-deep: #08121B;
+  --color-panel: #0C1824;
+  --color-line: #152739;
+  --color-line-strong: #1F3650;
+  --color-bone: #EDE7D9;
+  --color-mute: #7E93A6;
+  --color-faint: #4C6176;
+  --color-brass: #C9A55E;
+  --color-ice: #7CD3EA;
+  --color-coral: #FF5E4F;
+  --color-amber: #F0AE4B;
+  --color-violet: #A08CFF;
+  --radius-panel: 14px;
 }
 
 @layer base {
@@ -39,12 +56,28 @@
   }
   
   body {
-    background-color: var(--color-bg-primary);
-    color: var(--color-text-primary);
+    background-color: var(--color-ink);
+    color: var(--color-bone);
     font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
     overflow: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ice);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
   }
   
   ::selection {
@@ -218,6 +251,10 @@
   .glow-cyan { text-shadow: 0 0 8px rgba(0, 212, 255, 0.55); }
   .glow-emerald { text-shadow: 0 0 8px rgba(0, 255, 136, 0.55); }
   .glow-crimson { text-shadow: 0 0 8px rgba(255, 51, 85, 0.55); }
+
+  .filter-cyan-glow {
+    filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.55)) drop-shadow(0 0 13px rgba(0, 212, 255, 0.28));
+  }
 
   .corner-bracket {
     position: absolute;

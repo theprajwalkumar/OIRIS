@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Zap, Radio, Search, Boxes, Clock, Activity } from 'lucide-react'
+import { Radio, Search, Boxes, Clock, Activity } from 'lucide-react'
 import { useUI } from '../../context/UIContext.jsx'
 import { useMapLayers } from '../../context/MapLayerContext.jsx'
 import { useWS } from '../../context/WSContext.jsx'
@@ -31,12 +31,9 @@ const MissionHeader = ({ defcon = 5, onOpenSearch }) => {
   return (
     <header className="panel-glass border-b border-[var(--color-border-primary)] px-3 py-2 flex items-center gap-3 flex-wrap shrink-0">
       <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded border border-[var(--color-accent-emerald)] flex items-center justify-center"
-          style={{ boxShadow: '0 0 16px rgba(0,255,136,0.2), inset 0 0 12px rgba(0,255,136,0.1)' }}>
-          <Zap className="w-4 h-4 text-[var(--color-accent-emerald)]" />
-        </div>
+        <img src="/assets/osiris-emblem.svg" alt="OSIRIS COMMAND" className="w-9 h-9 filter-cyan-glow" />
         <div className="leading-tight">
-          <div className="font-mono text-xs font-bold tracking-[0.25em] text-[var(--color-text-primary)]">WORLD MONITOR</div>
+          <div className="font-mono text-xs font-bold tracking-[0.25em] text-[var(--color-accent-cyan)] glow-cyan">OSIRIS</div>
           <div className="font-mono text-[8px] tracking-[0.3em] text-[var(--color-text-muted)]">MISSION CONTROL</div>
           <div className="font-mono text-[8px] tracking-wide text-[var(--color-text-muted)]">Developed by Prajwal with <span className="text-[var(--color-accent-crimson)]">♥</span></div>
         </div>

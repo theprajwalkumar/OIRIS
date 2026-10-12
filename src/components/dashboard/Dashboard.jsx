@@ -1,8 +1,15 @@
-import React, { useState } from 'react'
-import MissionHeader from './MissionHeader.jsx'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
+import LeftRail from '../shell/LeftRail.jsx'
+import AppTopBar from '../shell/AppTopBar.jsx'
+import { Section } from '../sections/Section.jsx'
+import { useScrollSpy } from '../../hooks/useScrollSpy.js'
+import { SECTION_IDS, railIdFor } from '../../config/sections.js'
+
+// Temporary: existing panels remain mounted inside the new section chrome
+// until phases 2-4 replace each section's contents.
 import GlobalMapPanel from './GlobalMapPanel.jsx'
 import NewsPlayer from './NewsPlayer.jsx'
-import { WebcamsPanel, FeedCoveragePanel, BreakingTicker, GlobalSituationHeader } from './BroadcastPanels.jsx'
+import { WebcamsPanel, FeedCoveragePanel, BreakingTicker } from './BroadcastPanels.jsx'
 import { CIIPanel, ConflictZonesPanel, CriticalAlertsPanel, IntelStatsStrip } from './IntelPanels.jsx'
 import { CyberAttackMapPanel, ThreatAgentsPanel, CisaKevPanel, PhishingMalwarePanel } from './CyberPanels.jsx'
 import { AircraftMetricsPanel, FlightDataPanel, FlightDetailPanel, GlobalFlightRadarPanel, LocalRadarPanel } from './AviationPanels.jsx'
@@ -10,99 +17,128 @@ import { MaritimeAisPanel, CablesPipelinesPanel, PowerGridPanel, SpacePanel } fr
 import { EarthquakesPanel, WildfiresWeatherPanel } from './DisasterPanels.jsx'
 import MarketsPanel from './MarketsPanels.jsx'
 import GlobalFooter from './GlobalFooter.jsx'
-import { Panel, SectionDivider } from './ui.jsx'
 
-const Row = ({ children, className = '' }) => (
-  <div className={`grid gap-2 ${className}`}>{children}</div>
-)
+const Dashboard = () => {
+  const scrollRef = useRef(null)
+  const [range, setRange] = useState('24h')
 
-const Dashboard = ({ onOpenSearch }) => {
-  const [defcon] = useState(5)
+  const ids = useMemo(() => SECTION_IDS, [])
+  const activeSection = useScrollSpy(ids, scrollRef)
+  const activeRail = railIdFor(activeSection)
+
+  const jump = useCallback((id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [])
 
   return (
-    <div className="h-screen w-screen bg-black flex items-center justify-center p-1.5 overflow-hidden">
-      <div
-        className="relative w-full flex flex-col bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-lg overflow-hidden"
-        style={{ aspectRatio: '16 / 9', maxHeight: '97vh', maxWidth: 'calc(97vh * 16 / 9)' }}
-      >
-        <div className="absolute inset-0 grid-overlay opacity-25 pointer-events-none z-[400]" aria-hidden="true" />
-        <div className="absolute inset-0 vignette pointer-events-none z-[400]" aria-hidden="true" />
-        <div className="absolute inset-0 scanline-overlay pointer-events-none z-[600]" aria-hidden="true" />
+    <div className="h-screen w-screen bg-[var(--color-ink)]">
+      <LeftRail activeId={activeRail} onJump={jump} />
 
-        <MissionHeader defcon={defcon} onOpenSearch={onOpenSearch} />
+      <div className="flex h-screen flex-col pl-16">
+        <AppTopBar range={range} onRange={setRange} />
 
-        <div className="flex-1 min-h-0 overflow-y-auto p-2 space-y-2" style={{ scrollbarWidth: 'thin' }}>
-          <GlobalSituationHeader />
+        <main ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto">
+          <div className="mx-auto max-w-[1400px] px-6 pb-24 md:px-10">
+            <Section
+              id="situation"
+              title="Situation"
+              description="Live global picture: active conflicts, cyber activity, maritime movement and natural events on a single rotating globe."
+            >
+              <GlobalMapPanel />
+            </Section>
 
-          <GlobalMapPanel />
+            <Section
+              id="instability"
+              title="Instability and conflict"
+              description="Regional instability index with 24-hour movement, active conflict zones, and how much signal we are receiving."
+              status="12 feeds nominal"
+            >
+              <IntelStatsStrip />
+              <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <CIIPanel />
+                <ConflictZonesPanel />
+                <CriticalAlertsPanel />
+              </div>
+              <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <FeedCoveragePanel />
+              </div>
+            </Section>
 
-          <Row className="grid-cols-1 lg:grid-cols-3">
-            <Panel title="Live News Channel" accent="var(--color-accent-crimson)" className="lg:col-span-2 min-h-[280px]" dense>
-              <div className="h-full p-2.5"><NewsPlayer /></div>
-            </Panel>
-            <WebcamsPanel />
-          </Row>
+            <Section
+              id="markets"
+              title="Markets and economy"
+              description="India and world markets side by side, with 24-hour movement."
+            >
+              <MarketsPanel />
+            </Section>
 
-          <BreakingTicker />
+            <Section
+              id="cyber"
+              title="Cyber and threat intelligence"
+              description="Attack flows between origin and target countries, tracked threat families, and known exploited vulnerabilities."
+            >
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <CyberAttackMapPanel />
+                <ThreatAgentsPanel />
+                <CisaKevPanel />
+              </div>
+              <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <PhishingMalwarePanel />
+              </div>
+            </Section>
 
-          <Row className="grid-cols-1 lg:grid-cols-3">
-            <FeedCoveragePanel />
-          </Row>
+            <Section
+              id="domain"
+              title="Air, sea and space"
+              description="Live aviation over our airspace, maritime chokepoint pressure, and orbital passes overhead."
+            >
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <AircraftMetricsPanel />
+                <div className="lg:col-span-2"><GlobalFlightRadarPanel /></div>
+              </div>
+              <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <div className="lg:col-span-2"><LocalRadarPanel /></div>
+                <FlightDataPanel />
+              </div>
+              <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <MaritimeAisPanel />
+                <SpacePanel />
+                <FlightDetailPanel />
+              </div>
+            </Section>
 
-          <SectionDivider label="Intelligence & Instability" accent="var(--color-accent-amber)" />
-          <IntelStatsStrip />
-          <Row className="grid-cols-1 lg:grid-cols-3">
-            <CIIPanel />
-            <ConflictZonesPanel />
-            <CriticalAlertsPanel />
-          </Row>
+            <Section
+              id="infrastructure"
+              title="Infrastructure"
+              description="Submarine cable health and power and internet outage pressure by region."
+            >
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <CablesPipelinesPanel />
+                <PowerGridPanel />
+              </div>
+            </Section>
 
-          <SectionDivider label="Markets · Economy" accent="var(--color-accent-emerald)" />
-          <Row className="grid-cols-1">
-            <MarketsPanel />
-          </Row>
+            <Section
+              id="earth"
+              title="Earth and weather"
+              description="Seismic activity, wildfires and anomalies, plus the live news desk."
+            >
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <EarthquakesPanel />
+                <WildfiresWeatherPanel />
+              </div>
 
-          <SectionDivider label="Cyber & Threat Intelligence" accent="var(--color-accent-crimson)" />
-          <Row className="grid-cols-1 lg:grid-cols-3">
-            <CyberAttackMapPanel />
-            <ThreatAgentsPanel />
-            <CisaKevPanel />
-          </Row>
-          <Row className="grid-cols-1 lg:grid-cols-3">
-            <PhishingMalwarePanel />
-          </Row>
+              <h3 className="mt-10 mb-4 font-serif text-2xl text-[var(--color-bone)]">Live desk</h3>
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <div className="lg:col-span-2 min-h-[280px]"><NewsPlayer /></div>
+                <WebcamsPanel />
+              </div>
+              <div className="mt-4"><BreakingTicker /></div>
+            </Section>
 
-          <SectionDivider label="Aviation" accent="var(--color-accent-violet)" />
-          <Row className="grid-cols-1 lg:grid-cols-3">
-            <AircraftMetricsPanel />
-            <div className="lg:col-span-2"><GlobalFlightRadarPanel /></div>
-          </Row>
-          <Row className="grid-cols-1 lg:grid-cols-3">
-            <div className="lg:col-span-2"><LocalRadarPanel /></div>
-            <FlightDataPanel />
-          </Row>
-          <Row className="grid-cols-1">
-            <FlightDetailPanel />
-          </Row>
-
-          <SectionDivider label="Maritime · Infrastructure · Space" accent="var(--color-accent-cyan)" />
-          <Row className="grid-cols-1 lg:grid-cols-3">
-            <MaritimeAisPanel />
-            <CablesPipelinesPanel />
-            <PowerGridPanel />
-          </Row>
-          <Row className="grid-cols-1 lg:grid-cols-3">
-            <SpacePanel />
-          </Row>
-
-          <SectionDivider label="Disasters & Weather" accent="var(--color-accent-crimson)" />
-          <Row className="grid-cols-1 lg:grid-cols-2">
-            <EarthquakesPanel />
-            <WildfiresWeatherPanel />
-          </Row>
-
-          <GlobalFooter />
-        </div>
+            <GlobalFooter />
+          </div>
+        </main>
       </div>
     </div>
   )

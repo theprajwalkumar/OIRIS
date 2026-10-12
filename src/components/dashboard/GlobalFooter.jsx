@@ -18,7 +18,7 @@ const GlobalFooter = () => {
     <footer className="panel-glass border border-[var(--color-border-primary)] rounded-md px-3 py-2 flex items-center gap-3 flex-wrap">
       <div className="flex items-center gap-1.5">
         <Globe className="w-3.5 h-3.5 text-[var(--color-accent-cyan)]" />
-        <span className="font-mono text-[10px] tracking-[0.2em] text-[var(--color-text-primary)]">WORLD MONITOR</span>
+        <span className="font-mono text-[10px] tracking-[0.2em] text-[var(--color-text-primary)]">OSIRIS</span>
         <span className="font-mono text-[9px] text-[var(--color-text-muted)]">© {year}</span>
       </div>
 

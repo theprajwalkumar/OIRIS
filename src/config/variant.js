@@ -7,7 +7,7 @@
  *   3. persisted localStorage value
  *   4. the default variant
  *
- * Resolution mirrors the WorldMonitor variant conventions. `applyVariant`
+ * Resolution mirrors the Osiris variant conventions. `applyVariant`
  * is additive only: it sets `data-variant` on <html> and a default document
  * title; it does not alter existing app behavior.
  */

@@ -7,7 +7,7 @@
  *   - a small in-memory cache with in-flight request coalescing (stampede
  *     protection) so concurrent callers share one upstream fetch
  *   - per-dataset freshness metadata ("seed-meta"), mirroring the
- *     WorldMonitor freshness model: OK / WARN / STALE / EMPTY.
+ *     Osiris freshness model: OK / WARN / STALE / EMPTY.
  *
  * It has no dependencies and no knowledge of providers or routes; callers
  * supply the fetcher. Safe to import from any server module.

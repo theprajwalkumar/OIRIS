@@ -4,7 +4,7 @@
  *
  * These JSDoc typedefs document the shared shapes used across the
  * app. They are the single source of truth for domain data contracts
- * and mirror the WorldMonitor reference conventions.
+ * and mirror the Osiris reference conventions.
  */
 
 /**
@@ -103,7 +103,7 @@
 
 /**
  * Named HTTP cache tiers, expressed in seconds (s-maxage semantics).
- * Mirrors the WorldMonitor cache-tier model.
+ * Mirrors the Osiris cache-tier model.
  * @typedef {'fast'|'medium'|'slow'|'static'|'daily'|'noStore'} CacheTier
  */
 

@@ -123,7 +123,7 @@ async function fetchJSON(url, timeoutMs = FETCH_TIMEOUT, headers = {}) {
   try {
     const res = await fetch(url, {
       signal: controller.signal,
-      headers: { 'User-Agent': 'WorldMonitor/1.0 (OSINT dashboard)', ...headers }
+      headers: { 'User-Agent': 'Osiris/1.0 (OSINT dashboard)', ...headers }
     })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     return await res.json()

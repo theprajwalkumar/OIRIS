@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 300" width="420" height="300" role="img" aria-label="OSIRIS — Global Intelligence">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="75%">
+      <stop offset="0%" stop-color="#0c1a22"/>
+      <stop offset="55%" stop-color="#060b10"/>
+      <stop offset="100%" stop-color="#02040a"/>
+    </radialGradient>
+    <radialGradient id="halo" cx="50%" cy="48%" r="52%">
+      <stop offset="0%" stop-color="#00ffff" stop-opacity="0.26"/>
+      <stop offset="55%" stop-color="#00ffff" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#00ffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#b9ffff"/>
+      <stop offset="45%" stop-color="#00ffff"/>
+      <stop offset="100%" stop-color="#00b3ff"/>
+    </linearGradient>
+    <linearGradient id="wordmark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#eaffff"/>
+      <stop offset="48%" stop-color="#00ffff"/>
+      <stop offset="100%" stop-color="#00a6e6"/>
+    </linearGradient>
+    <linearGradient id="facetR" x1="0" y1="0" x2="1" y2="0.5">
+      <stop offset="0%" stop-color="#00ffff" stop-opacity="0.90"/>
+      <stop offset="55%" stop-color="#00c8ff" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="#0080ff" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="facetL" x1="1" y1="0" x2="0" y2="0.5">
+      <stop offset="0%" stop-color="#00ffff" stop-opacity="0.90"/>
+      <stop offset="55%" stop-color="#00c8ff" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="#0080ff" stop-opacity="0.05"/>
+    </linearGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glowSoft" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="1.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="textGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <style>
+      .wm { font-family: 'Inter','Helvetica Neue',Helvetica,Arial,system-ui,sans-serif; font-weight: 700; letter-spacing: 14px; }
+      .sub { font-family: 'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace; letter-spacing: 7px; }
+    </style>
+  </defs>
+
+  <!-- emblem -->
+  <g transform="translate(122,14) scale(0.88)">
+    <rect x="1.6" y="1.6" width="196.8" height="196.8" rx="42" fill="url(#bg)" stroke="#0e2b34" stroke-width="1.4"/>
+    <rect x="5.4" y="5.4" width="189.2" height="189.2" rx="38" fill="none" stroke="#00ffff" stroke-opacity="0.10" stroke-width="0.8"/>
+    <circle cx="100" cy="98" r="82" fill="url(#halo)"/>
+    <circle cx="100" cy="100" r="88" fill="none" stroke="#00ffff" stroke-opacity="0.15" stroke-width="0.8"/>
+    <circle cx="100" cy="100" r="88" fill="none" stroke="#00ffff" stroke-opacity="0.55" stroke-width="1.4" stroke-dasharray="1.5 13" stroke-linecap="round"/>
+
+    <g filter="url(#glowSoft)">
+      <path d="M138 90 L160 76 L187 62 L187 71 L160 84 L138 98 Z" fill="url(#facetR)"/>
+      <path d="M138 101 L164 91 L195 78 L195 89 L164 101 L138 109 Z" fill="url(#facetR)"/>
+      <path d="M138 112 L158 106 L182 99 L182 108 L158 114 L138 118 Z" fill="url(#facetR)" opacity="0.82"/>
+      <path d="M62 90 L40 76 L13 62 L13 71 L40 84 L62 98 Z" fill="url(#facetL)"/>
+      <path d="M62 101 L36 91 L5 78 L5 89 L36 101 L62 109 Z" fill="url(#facetL)"/>
+      <path d="M62 112 L42 106 L18 99 L18 108 L42 114 L62 118 Z" fill="url(#facetL)" opacity="0.82"/>
+    </g>
+
+    <g fill="none" stroke="#00ffff" stroke-opacity="0.34" stroke-width="0.9" stroke-linecap="round">
+      <path d="M139 96 H192"/>
+      <path d="M61 96 H8"/>
+      <path d="M170 84 L182 74"/>
+      <path d="M30 84 L18 74"/>
+    </g>
+    <g>
+      <circle cx="164" cy="96" r="2.3" fill="#ffbf00"/>
+      <circle cx="188" cy="96" r="1.6" fill="#ffbf00" fill-opacity="0.7"/>
+      <circle cx="182" cy="74" r="1.7" fill="#ff3333"/>
+      <circle cx="36" cy="96" r="2.3" fill="#ffbf00"/>
+      <circle cx="12" cy="96" r="1.6" fill="#ffbf00" fill-opacity="0.7"/>
+      <circle cx="18" cy="74" r="1.7" fill="#ff3333"/>
+    </g>
+
+    <g filter="url(#glow)">
+      <path d="M60 82 C80 61 120 61 140 82" fill="none" stroke="url(#cyan)" stroke-width="6.5" stroke-linecap="round"/>
+      <path d="M58 96 C78 73 122 73 142 96 C122 119 78 119 58 96 Z" fill="none" stroke="url(#cyan)" stroke-width="5" stroke-linejoin="round"/>
+      <circle cx="100" cy="96" r="17" fill="#00ffff" fill-opacity="0.07"/>
+      <circle cx="100" cy="96" r="17" fill="none" stroke="#00ffff" stroke-opacity="0.55" stroke-width="1.6"/>
+      <circle cx="100" cy="96" r="9.5" fill="#00ffff"/>
+      <circle cx="100" cy="96" r="4.4" fill="#02121a"/>
+      <circle cx="96.6" cy="92.6" r="2.4" fill="#eaffff" opacity="0.92"/>
+    </g>
+
+    <g filter="url(#glowSoft)">
+      <path d="M100 116 V145" stroke="#ff3333" stroke-width="4.6" stroke-linecap="round"/>
+      <path d="M100 145 L90.5 155" stroke="#ff3333" stroke-width="3.6" stroke-linecap="round"/>
+      <path d="M100 145 L109.5 155" stroke="#ff3333" stroke-width="3.6" stroke-linecap="round"/>
+      <circle cx="100" cy="145" r="3.1" fill="#ff5a5a"/>
+    </g>
+  </g>
+
+  <!-- dividers -->
+  <g stroke="#00ffff" stroke-opacity="0.4" stroke-width="1">
+    <line x1="112" y1="238" x2="176" y2="238"/>
+    <line x1="244" y1="238" x2="308" y2="238"/>
+  </g>
+  <path d="M210 231 L216 238 L210 245 L204 238 Z" fill="#ffbf00" fill-opacity="0.9"/>
+
+  <!-- wordmark -->
+  <text x="211" y="222" text-anchor="middle" class="wm" font-size="62" fill="url(#wordmark)" filter="url(#textGlow)">OSIRIS</text>
+  <text x="211" y="276" text-anchor="middle" class="sub" font-size="12.5" fill="#00ffff" fill-opacity="0.55">GLOBAL INTELLIGENCE</text>
+</svg>

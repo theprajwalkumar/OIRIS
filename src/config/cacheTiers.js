@@ -5,7 +5,7 @@
 
 /**
  * Named cache tiers in seconds (HTTP `s-maxage` semantics), mirroring the
- * WorldMonitor cache-tier model. The server owns the authoritative tier map
+ * Osiris cache-tier model. The server owns the authoritative tier map
  * in `server/cache.js`; this is the client-side mirror for UI staleness hints.
  */
 export const CACHE_TIERS = Object.freeze({

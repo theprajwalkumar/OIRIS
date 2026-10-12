@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Globe, ShieldCheck, Search, Box, Boxes, Bell, BellOff, ChevronDown, Radio, Maximize2, Minimize2 } from 'lucide-react'
+import { ShieldCheck, Search, Box, Boxes, Bell, BellOff, ChevronDown, Radio, Maximize2, Minimize2 } from 'lucide-react'
 import { useUI } from '../context/UIContext.jsx'
 import { useWS } from '../context/WSContext.jsx'
 import { useEvents } from '../context/EventContext.jsx'
@@ -118,9 +118,9 @@ const TopBar = ({ onOpenSearch }) => {
       <div className="max-w-full mx-auto px-4 h-14 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
           <div className="flex items-center gap-2">
-            <Globe className="w-5 h-5 text-[var(--color-accent-emerald)]" style={{ filter: 'drop-shadow(0 0 6px var(--color-accent-emerald))' }} />
-            <span className="font-mono text-sm font-bold tracking-wider text-[var(--color-text-primary)] whitespace-nowrap">
-              WORLD&nbsp;MONITOR
+            <img src="/assets/osiris-emblem.svg" alt="OSIRIS COMMAND" className="h-7 w-7 filter-cyan-glow" />
+            <span className="font-mono text-sm font-bold tracking-wider text-[var(--color-accent-cyan)] glow-cyan whitespace-nowrap">
+              OSIRIS
             </span>
             <span className="font-mono text-[9px] text-[var(--color-text-muted)] whitespace-nowrap">v2.10.0</span>
           </div>

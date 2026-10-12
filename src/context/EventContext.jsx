@@ -211,7 +211,7 @@ export const EventProvider = ({ children }) => {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `world-monitor-export-${Date.now()}.${extension}`
+    a.download = `osiris-export-${Date.now()}.${extension}`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)

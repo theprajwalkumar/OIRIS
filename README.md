@@ -1,4 +1,4 @@
-# WORLD MONITOR - Global Intelligence & OSINT Dashboard
+# OSIRIS - Global Intelligence & OSINT Dashboard
 
 A production-ready, real-time global intelligence and OSINT dashboard inspired by World Monitor (worldmonitor.app). Built with React 18, Vite, Tailwind CSS, and Express.js with native WebSockets.
 
@@ -49,7 +49,7 @@ A production-ready, real-time global intelligence and OSINT dashboard inspired b
 ```bash
 # Clone and install
 git clone <repository>
-cd world-monitor
+cd osiris
 npm install
 
 # Start development (runs both frontend and backend)
@@ -73,7 +73,7 @@ npm run preview
 ## Architecture
 
 ```
-world-monitor/
+osiris/
 ├── src/
 │   ├── components/          # React components
 │   │   ├── MapCanvas.jsx    # Leaflet map with all layer renderers
