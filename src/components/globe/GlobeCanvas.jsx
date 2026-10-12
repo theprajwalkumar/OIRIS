@@ -67,6 +67,7 @@ const GlobeCanvas = ({ points, activeLayers, selectedId, onSelect, focus }) => {
     hovered: null,
     fly: null,
     reduce: false,
+    dpr: 1,
     size: { w: 0, h: 0 }
   })
   const markersRef = useRef([])
@@ -100,6 +101,7 @@ const GlobeCanvas = ({ points, activeLayers, selectedId, onSelect, focus }) => {
       const w = wrap.clientWidth
       const h = wrap.clientHeight
       stateRef.current.size = { w, h }
+      stateRef.current.dpr = dpr
       canvas.width = Math.max(1, Math.round(w * dpr))
       canvas.height = Math.max(1, Math.round(h * dpr))
       canvas.style.width = `${w}px`
@@ -119,6 +121,13 @@ const GlobeCanvas = ({ points, activeLayers, selectedId, onSelect, focus }) => {
       const s = stateRef.current
       const { w, h } = s.size
       if (!w || !h) return
+      // Re-sync the backing store when DPR changes (window moved across displays).
+      if ((window.devicePixelRatio || 1) !== s.dpr) { resize(); return }
+
+      // Clear the full frame before redrawing: without this, pixels drawn
+      // outside the sphere in earlier frames (lifted arcs, marker pulses)
+      // persist and smear into ghost masks beside the globe.
+      ctx.clearRect(0, 0, w, h)
 
       // --- advance rotation ---
       const canAuto = !s.drag && !s.hovered && !selectedRef.current && !s.reduce
@@ -356,7 +365,7 @@ const GlobeCanvas = ({ points, activeLayers, selectedId, onSelect, focus }) => {
   }, [land, onSelect])
 
   return (
-    <div ref={wrapRef} className="absolute inset-0">
+    <div ref={wrapRef} className="absolute inset-0 overflow-hidden">
       <canvas
         ref={canvasRef}
         className="block h-full w-full touch-none select-none"
